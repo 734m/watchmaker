@@ -10,6 +10,13 @@ var Watchmaker = function() {
   var mouseTilePosition = new Vector2D(),
       playerScreenPosition = new Vector2D(),
       playerTilePosition = new Vector2D(64,64);
+      
+  // Drawing
+  var canvas, ctx;
+
+  // Sprite
+  var player;
+  
 
   var IMAGES = ["images/gifter.png", 
                 "images/blank.png",
@@ -43,22 +50,35 @@ var Watchmaker = function() {
     var tilePositionOffset = screenPositionOffset.divideBy(TILE_SIZE).floor();
     return playerTilePosition.plus(tilePositionOffset);
   }
+  
+  function repaint() {
+    ctx.fillStyle = "rgb(245,245,245)";  
+    ctx.fillRect (0,0,canvas.width(), canvas.height());  
+    player.draw(playerScreenPosition.x, playerScreenPosition.y ,4, 10)
+  }
 
   return {
     
     init: function() {
 
       Images.load(IMAGES, Watchmaker.main)
+
+      // set up socket
       io.setPath('/client/');
       var parts = window.location.host.split(":");
       socket = new io.Socket(parts[0], parts[1]);
       socket.connect();
       socket.send('some data');
       socket.on('message', dispatch);
+      
+      // set up 
+      canvas = $("canvas");
+      ctx = canvas.get(0).getContext("2d");
+      
     },
   
     main: function() {
-      var canvas = $("canvas");
+      player = new Sprite("images/gifter.png", ctx, 80, 9);
       var body = $("body");
       var w = $(window).width();
       var h = $(window).height();
@@ -67,9 +87,8 @@ var Watchmaker = function() {
         canvas.attr('width', $(body).width());
         canvas.attr('height', $(body).height());
         playerScreenPosition = new Vector2D($(body).width() - TILE_SIZE, $(body).height() - TILE_SIZE).divideBy(2).floor();
+        repaint()
       }).resize()
-      var ctx = canvas.get(0).getContext("2d");
-      var s = new Sprite("images/gifter.png", ctx, 80, 9);
       
       canvas.mousemove(function(event) {
         var p = getTilePosition(event);
@@ -80,12 +99,7 @@ var Watchmaker = function() {
       })
       
       // var i = 0;
-      setInterval(function() {
-        // Map.draw(ctx, 0, 0, 10, 10);
-        ctx.fillStyle = "rgb(255,255,255)";  
-        ctx.fillRect (0,0,$(body).width(),$(body).height());  
-        s.draw(playerScreenPosition.x, playerScreenPosition.y ,4, 10)
-      }, 30);
+      // setInterval(repaint, 30);
     }
   }
 }()
