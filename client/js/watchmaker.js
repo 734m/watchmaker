@@ -13,6 +13,8 @@ var Watchmaker = function() {
       playerTilePosition = new Vector2D(64,64);
   
   // Drawing
+  var FRAME_RATE = 20;
+  var FRAME_INTERVAL = 1000 / FRAME_RATE;
   var canvas, ctx;
 
   // Sprites
@@ -34,7 +36,7 @@ var Watchmaker = function() {
       repaint();
     },
     move: function(cmd) {
-      console.log(cmd);
+      playerWalk(cmd.direction);
     },
     interact: function(cmd) {
       console.log(cmd);
@@ -75,7 +77,12 @@ var Watchmaker = function() {
   //   // return playerTilePosition.plus(tilePositionOffset);
   // }
   
-  function repaint() {
+  function tick(dt) {
+    repaint(dt);
+  }
+  
+  function repaint(dt) {
+    if(dt === undefined) dt = 0;
     ctx.fillStyle = "rgb(245,245,245)";  
     ctx.fillRect (0,0,canvas.width(), canvas.height());  
   
@@ -85,7 +92,6 @@ var Watchmaker = function() {
         var tilePos = new Vector2D(x, y);
         var screenPos = tileToScreen(tilePos);
         if(screenPos.isWithin(-TILE_SIZE, -TILE_SIZE, canvas.width(), canvas.height())) {
-          console.log([x,y])
           var tileData = Map.tiles[x][y];
           var imageFile = "images/" + tileData["type"] + ".png"
           var image = Images.loaded[imageFile];
@@ -93,7 +99,13 @@ var Watchmaker = function() {
         }
       }
     }
-    player.draw(playerScreenPosition.x, playerScreenPosition.y ,4, 10)
+    player.sprite.draw(playerScreenPosition.x, playerScreenPosition.y, dt)
+  }
+
+  function playerWalk(direction) {
+    console.log("walking " + direction)
+    player.walk(direction);
+    // player.sprite.setAnimation("walk" + direction);
   }
 
   return {
@@ -115,7 +127,8 @@ var Watchmaker = function() {
     },
   
     main: function() {
-      player = new Sprite("images/gifter.png", ctx, 80, 9);
+      player = new Player(ctx);
+      // player = new Sprite("images/gifter.png", ctx, 80, 9);
       var body = $("body");
       var w = $(window).width();
       var h = $(window).height();
@@ -127,11 +140,11 @@ var Watchmaker = function() {
         repaint()
       }).resize()
       
+      // Setup event handlers
       canvas.mousemove(function(event) {
         var screenPosition = new Vector2D(event.clientX,event.clientY);
         var p = screenToTile(screenPosition);
         var t = tileToScreen(p);
-        console.log([p.x, p.y, t.x, t.y]);
       })
       canvas.click(function(event) {
         var screenPosition = new Vector2D(event.clientX,event.clientY);
@@ -144,6 +157,24 @@ var Watchmaker = function() {
           y2: p.y }))
         console.log([p.x, p.y]);
       })
+      
+      // Draw loop
+
+      var prevTime, dt, _tick;
+      _tick = function() {
+        // console.log("_tick")
+        if(prevTime === undefined) {
+          prevTime = new Date().getTime();
+          dt = 0;
+        }
+        tick(dt);
+        var newTime = new Date().getTime();
+        dt = (newTime - prevTime);
+        // console.log(dt);
+        prevTime = newTime;
+        setTimeout(_tick, FRAME_INTERVAL - dt)
+      };
+      _tick();
     }
   }
 }()
