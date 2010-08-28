@@ -9,6 +9,7 @@ var Watchmaker = function() {
   // Dimensions
   var TILE_SIZE = 80;
   var mouseTilePosition = new Vector2D(),
+      mouseScreenPosition = new Vector2D(),
       playerScreenPosition = new Vector2D();
   
   // Drawing
@@ -70,7 +71,7 @@ var Watchmaker = function() {
     return pointIsOnScreen(screenPosition);
   }
   
-  // convert a tile coordinate to our screen
+  // convert a tile coordinate to our screen, relative to player
   // wraps
   function tileToScreen(tilePosition) {
     var tilePositionOffset = tilePosition.subtract(player.tilePosition);
@@ -80,18 +81,13 @@ var Watchmaker = function() {
   // convert a screen coordinate to our global tile system. 
   // wraps
   function screenToTile(screenPosition) {
-    var screenPositionOffset = screenPosition.subtract(playerScreenPosition);
+    var screenPositionOffset = screenPosition.subtract(playerScreenPosition).plus(player.tileOffset.multiplyBy(TILE_SIZE));
     var tilePositionOffset = screenPositionOffset.divideBy(TILE_SIZE).floor();
     return player.tilePosition.plus(tilePositionOffset);
   }
   
-  // function getTilePosition(event) {
-  //   // var screenPositionOffset = screenPosition.subtract(playerScreenPosition);
-  //   // var tilePositionOffset = screenPositionOffset.divideBy(TILE_SIZE).floor();
-  //   // return player.tilePosition.plus(tilePositionOffset);
-  // }
-  
   function tick(dt) {
+    mouseTilePosition = screenToTile(mouseScreenPosition);
     player.tick(dt);
     repaint(dt);
   }
@@ -143,8 +139,7 @@ var Watchmaker = function() {
       
       // Setup event handlers
       canvas.mousemove(function(event) {
-        var screenPosition = new Vector2D(event.clientX,event.clientY);
-        mouseTilePosition = screenToTile(screenPosition);
+        mouseScreenPosition = new Vector2D(event.clientX,event.clientY);
       })
       canvas.click(function(event) {
         var screenPosition = new Vector2D(event.clientX,event.clientY);
