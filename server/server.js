@@ -26,12 +26,23 @@ var socket = io.listen(app);
 socket.on('connection', function(client) {
   var playerId = client.sessionId;
 
-  world.connect(playerId);
+  // connect client
+  client.send(JSON.stringify(world.connect(playerId)));
 
+  // process client messages and send responses
   client.on('message', function(message) {
-    world.process(playerId, message);
+    try {
+      client.send(
+        JSON.stringify(
+          world.process(playerId, JSON.parse(message))
+        )
+      );
+    } catch(x) {
+      console.log('ERROR!!');
+    }
   });
 
+  // disconnect client
   client.on('disconnect', function() {
     world.disconnect(playerId);
   });
