@@ -1,5 +1,3 @@
-//console.dir({env:process.env, paths:require.paths});
-
 var http = require('http');
 var io = require('socket.io');
 var app = require('express').createServer();
@@ -16,25 +14,26 @@ app.get('/*', function(req, res) {
   res.sendfile('client/' + req.params[0]);
 });
 
-var port = parseInt(process.env['PORT']) || 8080;
-app.listen(port);
+app.listen(parseInt(process.env['PORT']) || 8080);
 
 //
 // websocket
 //
 
+var world = require('./server/world');
 var socket = io.listen(app);
 
 socket.on('connection', function(client) {
-  console.log("new connection");
-  client.send('hello sucker');
+  var playerId = client.sessionId;
+
+  world.connect(playerId);
 
   client.on('message', function(message) {
-    console.log("client says:" + message);
+    world.process(playerId, message);
   });
 
   client.on('disconnect', function() {
-    console.log("disconnect");
+    world.disconnect(playerId);
   });
 });
 
