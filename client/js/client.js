@@ -17,22 +17,24 @@ var Watchmaker = function() {
       console.log(cmd);
     }
   }
-  
-  io.setPath('/client/');
-  socket = new io.Socket('localhost', 8080);
-  socket.connect();
-  socket.send('some data');
-  socket.on('message', function(cmd) {
+
+  function dispatch(cmd) {
     console.log('server sezz: ' + cmd);
     if(commands[cmd.name]) {
       commands[cmd.name](cmd);
     }
-  });
+  }
 
   return {
     
-    init: function(images) {
+    init: function(host, port) {
+      var images = ["images/gifter.png", "images/tile_blank.png"];
       Images.load(images, Watchmaker.main)
+      io.setPath('/client/');
+      socket = new io.Socket(host, port);
+      socket.connect();
+      socket.send('some data');
+      socket.on('message', dispatch);
     },
   
     update: function(mapData) {
