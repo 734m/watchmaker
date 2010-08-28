@@ -16,7 +16,12 @@ app.get('/*', function(req, res) {
   res.sendfile('client/' + req.params[0]);
 });
 
-app.listen(8080);
+var port = 8080;
+if (process.env['PRODUCTION_ENABLED']) {
+  port = 80;
+}
+
+app.listen(port);
 
 
 //
