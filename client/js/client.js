@@ -61,10 +61,10 @@ var Watchmaker = function() {
       var s = new Sprite("images/gifter.png", ctx, 80, 9);
       var i = 0;
       setInterval(function() {
-        Map.draw(ctx, 0, 0, 20, 20);
+        // Map.draw(ctx, 0, 0, 10, 10);
         i += 1;
-        // ctx.fillStyle = "rgb(255,255,255)";  
-        // ctx.fillRect (0,0,$(body).width(),$(body).height());  
+        ctx.fillStyle = "rgb(255,255,255)";  
+        ctx.fillRect (0,0,$(body).width(),$(body).height());  
         s.draw(50,50,2 + i % 2, 10)
       }, 500);
     }
