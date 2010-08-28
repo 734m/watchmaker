@@ -20,6 +20,10 @@ Vector2D.prototype = {
   },
   multiplyBy: function(value) {
     return new Vector2D(this.x * value, this.y * value);
+  },
+  isWithin: function(minX, minY, maxX, maxY) {
+    return(this.x >= minX && this.y >= minY && 
+           this.x <= maxX && this.y <= maxY);
   }
 }
 
