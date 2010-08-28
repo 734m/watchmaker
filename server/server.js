@@ -9,11 +9,11 @@ var app = require('express').createServer();
 //
 
 app.get('/', function(req, res) {
-  res.sendfile('../client/index.html');
+  res.sendfile('client/index.html');
 });
 
 app.get('/*', function(req, res) {
-  res.sendfile('../client/' + req.params[0]);
+  res.sendfile('client/' + req.params[0]);
 });
 
 app.listen(8080);
