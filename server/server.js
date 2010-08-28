@@ -16,7 +16,7 @@ app.get('/*', function(req, res) {
   res.sendfile('client/' + req.params[0]);
 });
 
-var port = process.env['PORT'] || 8080;
+var port = parseInt(process.env['PORT']) || 8080;
 app.listen(port);
 
 //
