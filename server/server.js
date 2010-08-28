@@ -16,13 +16,8 @@ app.get('/*', function(req, res) {
   res.sendfile('client/' + req.params[0]);
 });
 
-var port = 8080;
-if (process.env['PRODUCTION_ENABLED']) {
-  port = 80;
-}
-
+var port = process.env['PORT'] || 8080;
 app.listen(port);
-
 
 //
 // websocket
