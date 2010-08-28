@@ -23,15 +23,6 @@
     $(document).ready(function() {
       var images = ["images/gifter.png", "images/tile_blank.png"];
       Watchmaker.init(images)
-
-      io.setPath('/client/');
-
-      socket = new io.Socket('localhost', 8080);
-      socket.connect();
-      socket.send('some data');
-      socket.on('message', function(data) {
-        console.log('server sezz: ' + data);
-      });
     });
   </script>
 </body>
