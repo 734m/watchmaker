@@ -57,14 +57,26 @@ var Player = function(ctx, position) {
 Player.SPEED = 1;
 $.extend(Player.prototype, {
   tick: function(dt) {
-    var change = this.direction.multiplyBy(0.001 * dt);
-    var newPosition = this.position.plus(change);
-    // console.log([change.x, change.y]);
-    this.setPosition(newPosition.x, newPosition.y);
-    // console.log(this.tilePosition.equals(this.destination))
-    //console.log(this.destination)
-    if(this.tilePosition.equals(this.destination)) {
-      this.stop();
+    if(this.directionName != "stop") {
+      // debugger;
+      var change = this.direction.multiplyBy(0.001 * dt);
+      var newPosition = this.position.plus(change);
+      if(this.directionName == "left" || this.directionName == "up") {
+        var ceilPos = newPosition.ceil();
+        console.log([this.directionName, newPosition.x, ceilPos.x, this.destination.x]);
+        if(ceilPos.equals(this.destination)) {
+          this.setPosition(ceilPos.x, ceilPos.y);
+          this.stop();
+        }else{
+          this.setPosition(newPosition.x, newPosition.y)
+        }
+      }else{
+        this.setPosition(newPosition.x, newPosition.y);
+        if(this.tilePosition.equals(this.destination)) {
+          this.stop();
+          console.log(["stopping", this.tilePosition.x, this.position.x])
+        }
+      }
     }
   },
 
@@ -78,12 +90,21 @@ $.extend(Player.prototype, {
     this.tileOffset = this.position.subtract(this.tilePosition);
   },
   
-  walk: function(direction, destination) {
-    this.sprite.setAnimation("walk_" + direction, 500);
-    this.direction = DIRECTIONS[direction];
-    this.destination = destination;
+  walk: function(directionName, destination) {
+    if(directionName == "stop") {
+      this.stop();
+    }else{
+      // debugger;
+      this.sprite.setAnimation("walk_" + directionName, 300);
+      this.directionName = directionName;
+      this.direction = DIRECTIONS[directionName];
+      this.destination = destination;
+    }
   },
-  stop: function(direction) {
+  
+  stop: function() {
+    this.directionName = "stop"
+    this.setPosition(this.tilePosition.x, this.tilePosition.y);
     this.sprite.setAnimation("stand_still", 1000);
     this.stopRequested = true;
     this.direction = DIRECTIONS.none;
