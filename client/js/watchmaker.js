@@ -123,16 +123,13 @@ var Watchmaker = function() {
   return {
     
     init: function() {
-
       Images.load(IMAGES, Watchmaker.main)
-      // set up 
       canvas = $("canvas");
-      ctx = canvas.get(0).getContext("2d");      
+      ctx = canvas.get(0).getContext("2d");
     },
   
     main: function() {
       player = new Player(ctx);
-      // player = new Sprite("images/gifter.png", ctx, 80, 9);
       var body = $("body");
       var w = $(window).width();
       var h = $(window).height();
@@ -161,7 +158,6 @@ var Watchmaker = function() {
       })
       
       // Draw loop
-
       var prevTime, dt, _tick;
       _tick = function() {
         // console.log("_tick")
@@ -172,13 +168,12 @@ var Watchmaker = function() {
         tick(dt);
         var newTime = new Date().getTime();
         dt = (newTime - prevTime);
-        // console.log(dt);
         prevTime = newTime;
         setTimeout(_tick, FRAME_INTERVAL - dt)
       };
       _tick();
       
-      // set up socket
+      // Set up socket
       io.setPath('/client/');
       var parts = window.location.host.split(":");
       socket = new io.Socket(parts[0], parts[1]);

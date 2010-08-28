@@ -15,6 +15,9 @@ Vector2D.prototype = {
   floor: function() {
     return new Vector2D(Math.floor(this.x), Math.floor(this.y));
   },
+  ceil: function() {
+    return new Vector2D(Math.ceil(this.x), Math.ceil(this.y));
+  },
   divideBy: function(value) {
     return new Vector2D(this.x / value, this.y / value);
   },
