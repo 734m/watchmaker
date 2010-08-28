@@ -11,6 +11,21 @@
   
 
   <script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+
+  <script src="js/socket.io.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      io.setPath('/client/');
+
+      socket = new io.Socket('localhost', 8080);
+      socket.connect();
+      socket.send('some data');
+      socket.on('message', function(data) {
+        console.log('server sezz: ' + data);
+      });
+    });
+  </script>
+
   <script src="js/processing-0.9.7.min.js"></script>
   <script type="text/javascript" charset="utf-8">
     $(function() {

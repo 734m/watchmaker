@@ -1,27 +1,34 @@
 var http = require('http');
 var io = require('socket.io.js');
+var app = require('express').createServer();
 
 //
 // http
 //
 
-server = http.createServer(function(req, res) {
-  res.writeHead(200, {'Content-Type': 'text/html'});
-  res.write('<h1>Hello world</h1>');
-  res.close();
+app.get('/', function(req, res) {
+  res.sendfile('../client/index.html');
 });
 
-server.listen(8080);
+app.get('/*', function(req, res) {
+  res.sendfile('../client/' + req.params[0]);
+});
+
+app.listen(8080);
+
 
 //
 // websocket
 //
 
-var socket = io.listen(server);
+var socket = io.listen(app);
 
 socket.on('connection', function(client) {
-  client.on('message', function() {
-    console.log(".");
+  console.log("new connection");
+  client.send('hello sucker');
+
+  client.on('message', function(message) {
+    console.log("client says:" + message);
   });
 
   client.on('disconnect', function() {
