@@ -26,7 +26,7 @@ var Watchmaker = {
       i += 1;
       ctx.fillStyle = "rgb(255,255,255)";  
       ctx.fillRect (0,0,$(body).width(),$(body).height());  
-      s.draw(50,50,2 + i % 2, 10)
+      s.draw(50,50,7 + i % 2, 10)
     }, 500);
   }
 }
@@ -39,8 +39,8 @@ var Sprite = function(source, ctx, frameWidth, numFrames) {
   this.numFrames = numFrames;
 }
 
-var Tile = function() {
-  
+var Map = function() {
+  this.tiles = [];
 }
 
 $.extend(Sprite.prototype, {
