@@ -2,19 +2,28 @@
 <html>
 <head>
 <title>Watchmaker</title>
+  <style type="text/css" media="screen">
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
 </head>
 <body>
-  <p>watchmaker</p>
-  
 
-  <canvas width="200" height="200"></canvas>
+  <canvas></canvas>
   
 
   <script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
-
   <script src="js/socket.io.js"></script>
-  <script type="text/javascript">
+  <script src="js/client.js"></script>
+  <script type="text/javascript" charset="utf-8">
     $(document).ready(function() {
+      var images = ["images/gifter.png", "images/tile_blank.png"];
+      Watchmaker.init(images)
+
       io.setPath('/client/');
 
       socket = new io.Socket('localhost', 8080);
@@ -25,15 +34,5 @@
       });
     });
   </script>
-
-  <script src="js/processing-0.9.7.min.js"></script>
-  <script type="text/javascript" charset="utf-8">
-    $(function() {
-      var p = Processing($("canvas").get(0), false);
-      console.log(p);
-      console.log($("canvas").get(0))
-    })
-  </script>
-  <script src="js/client.js"></script>
 </body>
 </html>
