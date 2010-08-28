@@ -26,8 +26,7 @@ var Watchmaker = function() {
 
   var commands = {
     init: function(cmd) {
-      console.log(cmd);
-      playerPosition = new Vector2D(cmd.x, cmd.y);
+      playerTilePosition = new Vector2D(cmd.x, cmd.y);
     },
     move: function(cmd) {
       console.log(cmd);
@@ -39,6 +38,7 @@ var Watchmaker = function() {
 
   function dispatch(cmd) {
     console.log('server sezz: ' + cmd);
+    cmd = JSON.parse(cmd);
     if(commands[cmd.name]) {
       commands[cmd.name](cmd);
     }
@@ -82,7 +82,6 @@ var Watchmaker = function() {
       var parts = window.location.host.split(":");
       socket = new io.Socket(parts[0], parts[1]);
       socket.connect();
-      socket.send('some data');
       socket.on('message', dispatch);
       
       // set up 
