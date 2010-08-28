@@ -6,18 +6,21 @@
 
 var Watchmaker = function() {
 
+  // Dimensions
   var TILE_SIZE = 80;
   var mouseTilePosition = new Vector2D(),
       playerScreenPosition = new Vector2D(),
       playerTilePosition = new Vector2D(64,64);
-      
+  
   // Drawing
   var canvas, ctx;
 
-  // Sprite
+  // Sprites
   var player;
   
-
+  // Socket
+  var socket;
+  
   var IMAGES = ["images/gifter.png", 
                 "images/blank.png",
                 "images/grass.png",
@@ -38,7 +41,7 @@ var Watchmaker = function() {
 
   function dispatch(cmd) {
     console.log('server sezz: ' + cmd);
-    cmd = JSON.parse(cmd);
+    cmd = $.parseJSON(cmd);
     if(commands[cmd.name]) {
       commands[cmd.name](cmd);
     }
@@ -111,7 +114,13 @@ var Watchmaker = function() {
       canvas.click(function(event) {
         var screenPosition = new Vector2D(event.clientX,event.clientY);
         var p = screenToTile(screenPosition);
-        console.log([p.x, p.y]);        
+        socket.send(JSON.stringify({ 
+          name: "move_req", 
+          x1: playerTilePosition.x, 
+          y1: playerTilePosition.y, 
+          x2: p.x, 
+          y2: p.y }))
+        console.log([p.x, p.y]);
       })
     }
   }
