@@ -37,8 +37,9 @@ socket.on('connection', function(client) {
           world.process(playerId, JSON.parse(message))
         )
       );
-    } catch(x) {
+    } catch(e) {
       console.log('ERROR!!');
+      console.dir(e);
     }
   });
 

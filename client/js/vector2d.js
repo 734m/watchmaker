@@ -5,7 +5,7 @@ var Vector2D = function(x, y) {
   this.x = x || 0;
   this.y = y || 0;
 }
-$.extend(Vector2D.prototype, {
+Vector2D.prototype = {
   subtract: function(v2) {
     return new Vector2D(this.x - v2.x, this.y - v2.y);
   },
@@ -21,4 +21,8 @@ $.extend(Vector2D.prototype, {
   multiplyBy: function(value) {
     return new Vector2D(this.x * value, this.y * value);
   }
-})
+}
+
+if (typeof(exports) !== 'undefined') {
+  exports.vector2D = Vector2D;
+}
