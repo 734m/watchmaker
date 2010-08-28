@@ -27,11 +27,11 @@ var Watchmaker = function() {
 
   return {
     
-    init: function(host, port) {
+    init: function() {
       var images = ["images/gifter.png", "images/tile_blank.png"];
       Images.load(images, Watchmaker.main)
       io.setPath('/client/');
-      socket = new io.Socket(host, port);
+      socket = new io.Socket(window.location.host, window.location.port);
       socket.connect();
       socket.send('some data');
       socket.on('message', dispatch);
