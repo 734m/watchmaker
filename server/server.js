@@ -26,14 +26,18 @@ var socket = io.listen(app);
 socket.on('connection', function(client) {
   var playerId = client.sessionId;
 
-  // connect client
-  client.send(JSON.stringify(world.connect(playerId)));
+  // connect client; broadcast player added to all connected clients
+  socket.broadcast(
+    JSON.stringify(
+      world.connect(playerId)
+    )
+  );
 
-  // send map and players
+  // send map and players to client that just connected
   client.send(JSON.stringify({name: "set_map", data: world.map}));
   client.send(JSON.stringify({name: "set_players", data: world.players}));
 
-  // process client messages and broadcast updates
+  // process client messages; broadcast updates to all connected clients
   client.on('message', function(message) {
     try {
       socket.broadcast(
@@ -47,9 +51,13 @@ socket.on('connection', function(client) {
     }
   });
 
-  // disconnect client
+  // disconnect client; broadcast player deletion to all connected clients
   client.on('disconnect', function() {
-    world.disconnect(playerId);
+    socket.broadcast(
+      JSON.stringify(
+        world.disconnect(playerId)
+      )
+    );
   });
 });
 
