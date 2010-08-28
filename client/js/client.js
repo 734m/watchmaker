@@ -42,6 +42,7 @@ var Sprite = function(source, ctx, frameWidth, numFrames) {
 var Map = function() {
   this.tiles = [];
   
+  
 }
 
 $.extend(Sprite.prototype, {
