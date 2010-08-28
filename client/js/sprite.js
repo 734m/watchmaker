@@ -86,6 +86,8 @@ $.extend(Player.prototype, {
   
   setPosition: function(x, y) {
     this.position = new Vector2D(x,y);
+    
+    // FIX ME - decide tile by rounding, not by floor
     this.tilePosition = this.position.floor();
     this.tileOffset = this.position.subtract(this.tilePosition);
   },
