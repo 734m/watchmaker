@@ -24,6 +24,9 @@ Vector2D.prototype = {
   isWithin: function(minX, minY, maxX, maxY) {
     return(this.x >= minX && this.y >= minY && 
            this.x <= maxX && this.y <= maxY);
+  },
+  equals: function(v2) {
+    return(this.x == v2.x && this.y == v2.y);
   }
 }
 
