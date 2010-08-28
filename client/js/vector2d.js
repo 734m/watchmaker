@@ -17,5 +17,8 @@ $.extend(Vector2D.prototype, {
   },
   divideBy: function(value) {
     return new Vector2D(this.x / value, this.y / value);
+  },
+  multiplyBy: function(value) {
+    return new Vector2D(this.x * value, this.y * value);
   }
 })

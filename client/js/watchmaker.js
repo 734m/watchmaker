@@ -44,12 +44,26 @@ var Watchmaker = function() {
     }
   }
   
-  function getTilePosition(event) {
-    var screenPosition = new Vector2D(event.clientX,event.clientY);
+  // convert a tile coordinate to our screen
+  // wraps
+  function tileToScreen(tilePosition) {
+    var tilePositionOffset = tilePosition.subtract(playerTilePosition);
+    return playerScreenPosition.plus(tilePositionOffset.multiplyBy(TILE_SIZE));
+  }
+
+  // convert a screen coordinate to our global tile system. 
+  // wraps
+  function screenToTile(screenPosition) {
     var screenPositionOffset = screenPosition.subtract(playerScreenPosition);
     var tilePositionOffset = screenPositionOffset.divideBy(TILE_SIZE).floor();
     return playerTilePosition.plus(tilePositionOffset);
   }
+  
+  // function getTilePosition(event) {
+  //   // var screenPositionOffset = screenPosition.subtract(playerScreenPosition);
+  //   // var tilePositionOffset = screenPositionOffset.divideBy(TILE_SIZE).floor();
+  //   // return playerTilePosition.plus(tilePositionOffset);
+  // }
   
   function repaint() {
     ctx.fillStyle = "rgb(245,245,245)";  
@@ -73,8 +87,7 @@ var Watchmaker = function() {
       
       // set up 
       canvas = $("canvas");
-      ctx = canvas.get(0).getContext("2d");
-      
+      ctx = canvas.get(0).getContext("2d");      
     },
   
     main: function() {
@@ -91,15 +104,16 @@ var Watchmaker = function() {
       }).resize()
       
       canvas.mousemove(function(event) {
-        var p = getTilePosition(event);
-        console.log([p.x, p.y]);
+        var screenPosition = new Vector2D(event.clientX,event.clientY);
+        var p = screenToTile(screenPosition);
+        var t = tileToScreen(p);
+        console.log([p.x, p.y, t.x, t.y]);
       })
       canvas.click(function(event) {
-        
+        var screenPosition = new Vector2D(event.clientX,event.clientY);
+        var p = screenToTile(screenPosition);
+        console.log([p.x, p.y]);        
       })
-      
-      // var i = 0;
-      // setInterval(repaint, 30);
     }
   }
 }()
