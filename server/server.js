@@ -1,7 +1,7 @@
-console.dir({env:process.env, paths:require.paths});
+//console.dir({env:process.env, paths:require.paths});
 
 var http = require('http');
-var io = require('/home/node/.node_libraries/socket.io.js');
+var io = require('socket.io');
 var app = require('express').createServer();
 
 //
