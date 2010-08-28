@@ -62,7 +62,7 @@ $.extend(Player.prototype, {
     // console.log([change.x, change.y]);
     this.setPosition(newPosition.x, newPosition.y);
     // console.log(this.tilePosition.equals(this.destination))
-    console.log(this.destination)
+    //console.log(this.destination)
     if(this.tilePosition.equals(this.destination)) {
       this.stop();
     }

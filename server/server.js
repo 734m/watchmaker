@@ -29,10 +29,14 @@ socket.on('connection', function(client) {
   // connect client
   client.send(JSON.stringify(world.connect(playerId)));
 
-  // process client messages and send responses
+  // send map and players
+  client.send(JSON.stringify({name: "set_map", data: world.map}));
+  client.send(JSON.stringify({name: "set_players", data: world.players}));
+
+  // process client messages and broadcast updates
   client.on('message', function(message) {
     try {
-      client.send(
+      socket.broadcast(
         JSON.stringify(
           world.process(playerId, JSON.parse(message))
         )

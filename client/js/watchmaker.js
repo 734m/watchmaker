@@ -34,10 +34,25 @@ var Watchmaker = function() {
       player.setPosition(cmd.x, cmd.y)
       repaint();
     },
+
     move: function(cmd) {
       player.walk(cmd.direction, new Vector2D(cmd.x2, cmd.y2));
     },
+
     interact: function(cmd) {
+      console.log(cmd);
+    },
+
+    set_map: function(cmd) {
+      for (var x in cmd.data) {
+        for (var y in cmd.data[x]) {
+          Map.set(x, y, cmd.data[x][y]);
+        }
+      }
+      repaint();
+    },
+
+    set_players: function(cmd) {
       console.log(cmd);
     }
   }
@@ -132,10 +147,7 @@ var Watchmaker = function() {
       // Setup event handlers
       canvas.mousemove(function(event) {
         var screenPosition = new Vector2D(event.clientX,event.clientY);
-         // = screenToTile(screenPosition);
         mouseTilePosition = screenToTile(screenPosition);
-        
-        // var t = tileToScreen(p);
       })
       canvas.click(function(event) {
         var screenPosition = new Vector2D(event.clientX,event.clientY);
@@ -222,7 +234,3 @@ var Map = function() {
     
   }
 }();
-Map.set(3, 2, {"type": "crater"})
-Map.set(4, 5, {"type": "crater"})
-Map.set(4, 6, {"type": "crater"})
-Map.set(10, 8, {"type": "crater"})
