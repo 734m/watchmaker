@@ -6,6 +6,12 @@
 
 var Watchmaker = function() {
 
+  var IMAGES = ["images/gifter.png", 
+                "images/blank.png",
+                "images/grass.png",
+                "images/water.png",
+                "images/tile_blank.png"];
+
   var commands = {
     init: function(cmd) {
       console.log(cmd);
@@ -28,8 +34,7 @@ var Watchmaker = function() {
   return {
     
     init: function() {
-      var images = ["images/gifter.png", "images/tile_blank.png"];
-      Images.load(images, Watchmaker.main)
+      Images.load(IMAGES, Watchmaker.main)
       io.setPath('/client/');
       var parts = window.location.host.split(":");
       socket = new io.Socket(parts[0], parts[1]);
@@ -41,13 +46,8 @@ var Watchmaker = function() {
     update: function(mapData) {
       
     },
-  
+    
     main: function() {
-      
-
-
-
-
       var canvas = $("canvas");
       var body = $("body");
       var w = $(window).width();
@@ -61,9 +61,10 @@ var Watchmaker = function() {
       var s = new Sprite("images/gifter.png", ctx, 80, 9);
       var i = 0;
       setInterval(function() {
+        Map.draw(ctx, 0, 0, 20, 20);
         i += 1;
-        ctx.fillStyle = "rgb(255,255,255)";  
-        ctx.fillRect (0,0,$(body).width(),$(body).height());  
+        // ctx.fillStyle = "rgb(255,255,255)";  
+        // ctx.fillRect (0,0,$(body).width(),$(body).height());  
         s.draw(50,50,2 + i % 2, 10)
       }, 500);
     }
@@ -79,7 +80,8 @@ var Sprite = function(source, ctx, frameWidth, numFrames) {
 }
 
 var Map = function() {
-  var tiles = [];
+  var tiles = {};
+  var TILE_SIZE = 80;
     // 
     // function Region(x, y, width, height) {
     //   this.x = x;
@@ -113,6 +115,21 @@ var Map = function() {
         tiles[x][y] = {};
       }
       tiles[x][y] = value;
+    },
+    
+    draw: function(ctx, x, y, w, h) {
+      for(var i = 0; i < w; i++) {
+        for(var j = 0; j < h; j++) {
+          var imageFile = "blank.png";
+          var tile = Map.get(i, j);
+          debugger;
+          if(tile) {
+            imageFile = tile["type"] + ".png"
+          }
+          var image = Images.loaded["images/" + imageFile];
+          ctx.drawImage(image, i * TILE_SIZE, j * TILE_SIZE);
+        }
+      }
     }
     
     // // get a region starting at top left x, y, with width/height 
