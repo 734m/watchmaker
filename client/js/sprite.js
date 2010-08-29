@@ -79,9 +79,11 @@ var Player = function(ctx, tileSize, position) {
     "walk_down": [5,6],
     "walk_up": [7,8]
   }, this.afterDraw);
-  this.chatBubbleSprite = new Sprite("images/talkbubble.png", ctx, 42, 3, tileSize, {
+  this.chatBubbleSprite = new Sprite("images/talkbubble.png", ctx, 42*5, 3, tileSize, {
     "default": [0,1,2]
   })
+  this.chatBubbleSprite.setAnimation("default", 100);
+  this.chatBubbleText = $("<div></div>").addClass("chatBubbleText").appendTo("body");
   this.setPosition(0,0);
   this.destination = this.position;
   this.direction = DIRECTIONS.none;
@@ -89,9 +91,11 @@ var Player = function(ctx, tileSize, position) {
 }
 Player.HSPEED = 2;
 Player.VSPEED = 3;
+Player.CHAT_BUBBLE_TIMEOUT = 5000;
 $.extend(Player.prototype, {
   tick: function(dt) {
     this.sprite.tick(dt);
+    this.chatBubbleSprite.tick(dt);
     if(this.directionName != "stop") {
       var change = this.direction.multiplyBy(0.001 * dt);
       var newPosition = this.position.plus(new Vector2D(change.x * Player.HSPEED, change.y * Player.VSPEED));
@@ -239,17 +243,6 @@ $.extend(Player.prototype, {
     }
   },
 
-  drawChatBubble: function(x, y) {
-    if(this.message != null) {
-      debugger;
-      this.chatBubbleSprite.draw(screenPosition.x, screenPosition.y - 40);
-    }
-  },
-  
-  removeChatBubble: function() {
-    this.sprite.afterDraw = null;
-  },
-  
   setPosition: function(x, y) {
     this.position = new Vector2D(x,y);
     this.tilePosition = this.position.floor();
@@ -276,13 +269,26 @@ $.extend(Player.prototype, {
     this.direction = DIRECTIONS.none;
   },
   
+  drawChatBubble: function(x, y) {
+    if(this.message != null) {
+      this.chatBubbleSprite.draw(x + 80, y - 80);
+    }
+    this.chatBubbleText.css({top: y - 120, left: x + 35}).text(this.message).show();
+  },
+  
+  removeChatBubble: function(player) {
+    player.sprite.afterDraw = null;
+    player.chatBubbleText.hide();
+  },
+  
   talk: function(message) {
-    var p;
+    var p = this;
+    clearTimeout(this.chatBubbleTimeoutID);
     this.message = message;
-    this.sprite.afterDraw = this.drawChatBubble;
-    setTimeout(function() {
-      p.sprite.afterDraw = null;
-    })
+    this.sprite.afterDraw = function(x,y) {
+      p.drawChatBubble(x, y)
+    }
+    this.chatBubbleTimeoutID = setTimeout(this.removeChatBubble, Player.CHAT_BUBBLE_TIMEOUT, this);
   }
 });
 
