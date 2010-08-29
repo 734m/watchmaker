@@ -28,7 +28,9 @@ var Watchmaker = function() {
       if (cmd.playerId == player.playerId) {
         player.setPosition(cmd.x, cmd.y);
       } else {
-        otherPlayers[cmd.playerId] = new Player(ctx, cmd.playerId);
+        otherPlayers[cmd.playerId] = new Player(ctx);
+        otherPlayers[cmd.playerId].playerId = cmd.playerId;
+        otherPlayers[cmd.playerId].setPosition(cmd.x, cmd.y);
       }
       repaint();
     },
@@ -49,7 +51,7 @@ var Watchmaker = function() {
     set_map: function(cmd) {
       for (var x in cmd.data) {
         for (var y in cmd.data[x]) {
-          console.log([x, y, cmd.data[x][y]])
+          //console.log([x, y, cmd.data[x][y]])
           Map.set(x, y, cmd.data[x][y]);
         }
       }
@@ -61,8 +63,15 @@ var Watchmaker = function() {
         if (playerId != player.playerId) {
           otherPlayers[playerId] = new Player(ctx);
           otherPlayers[playerId].playerId = playerId;
-          console.log("player " + playerId + ", " + otherPlayers[playerId].position.x + ', ' + otherPlayers[playerId].position.y);
+          otherPlayers[playerId].setPosition(cmd.data[playerId].x, cmd.data[playerId].y);
         }
+      }
+    },
+
+    delete_player: function(cmd) {
+      console.dir(cmd);
+      if (otherPlayers.hasOwnProperty(cmd.playerId)) {
+        delete otherPlayers[cmd.playerId];
       }
     }
   }
@@ -114,7 +123,7 @@ var Watchmaker = function() {
   function tick(dt) {
     mouseTilePosition = screenToTile(mouseScreenPosition);
     player.tick(dt);
-    for(p in otherPlayers) {
+    for(var p in otherPlayers) {
       otherPlayers[p].tick(dt);
     }
     repaint(dt);
@@ -168,7 +177,7 @@ var Watchmaker = function() {
     // }));
     // console.log(spriteArray.length);
 
-    for (id in otherPlayers) {
+    for (var id in otherPlayers) {
       var p = otherPlayers[id];
       spriteArray.push({x: p.position.x, y: p.position.y, sprite: p.sprite});
     }
