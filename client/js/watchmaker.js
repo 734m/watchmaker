@@ -79,12 +79,8 @@ var Watchmaker = function() {
     talk: function(cmd) {
       if (otherPlayers.hasOwnProperty(cmd.playerId)) {
         otherPlayers[cmd.playerId].talk(cmd.message);
-      }
-    },
-
-    search: function(cmd) {
-      if (otherPlayers.hasOwnProperty(cmd.playerId)) {
-        otherPlayers[cmd.playerId].search(cmd.message);
+      } else if (cmd.playerId == player.playerId) {
+        player.talk(cmd.message);
       }
     }
   }
@@ -282,7 +278,7 @@ var Watchmaker = function() {
         "playerId": player.playerId }))
     },
     search: function(message) {
-      player.talk("searching " +message);
+      player.talk("thinking about \"" + message + '"...');
       socket.send(JSON.stringify({
         "name": "search",
         "message": message,

@@ -23,9 +23,8 @@ app.listen(parseInt(process.env['PORT']) || 8080);
 var world = require('./server/world');
 var socket = io.listen(app);
 
+// broadcast to all clients plz
 function broadcastData(data) {
-  console.log("starting callback");
-
   if (typeof data !== 'undefined') {
     socket.broadcast(JSON.stringify(data));
   }
