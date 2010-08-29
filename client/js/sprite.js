@@ -74,8 +74,8 @@ var Player = function(ctx, position) {
   this.direction = DIRECTIONS.none;
   this.stop();
 }
-Player.HSPEED = 1;
-Player.VSPEED = 1.3;
+Player.HSPEED = 2;
+Player.VSPEED = 3;
 $.extend(Player.prototype, {
   tick: function(dt) {
     this.sprite.tick(dt);
@@ -241,7 +241,7 @@ $.extend(Player.prototype, {
       this.stop();
     }else{
       // debugger;
-      this.sprite.setAnimation("walk_" + directionName, 300);
+      this.sprite.setAnimation("walk_" + directionName, 150);
       this.directionName = directionName;
       this.direction = DIRECTIONS[directionName];
       this.destination = destination;

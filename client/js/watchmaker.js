@@ -12,7 +12,7 @@ var Watchmaker = function() {
       playerScreenPosition = new Vector2D();
   
   // Drawing
-  var FRAME_RATE = 30;
+  var FRAME_RATE = 20;
   var FRAME_INTERVAL = 1000 / FRAME_RATE;
   var canvas, ctx;
 
@@ -91,7 +91,11 @@ var Watchmaker = function() {
       "walk_down": [5,6],
       "walk_up": [7,8]
     });
-    new Sprite("images/deadtree.png", ctx, null, null, TILE);
+    // new Sprite("images/deadtree.png", ctx, null, null, TILE);
+    // new Sprite("images/streetlamp.png", ctx, null, null, TILE);
+    // new Sprite("images/americanflag.png", ctx, null, null, TILE);
+    // new Sprite("images/desk.png", ctx, null, null, TILE);
+    // new Sprite("images/portopotty.png", ctx, null, null, TILE);
   }
   
   
@@ -135,7 +139,7 @@ var Watchmaker = function() {
   
   function repaint(dt) {
     if(dt === undefined) dt = 0;
-    ctx.fillStyle = "rgb(245,245,245)";  
+    ctx.fillStyle = "rgba(255,255,255, 0.8)";  
     ctx.fillRect (0,0,canvas.width(), canvas.height());  
 
     if(mouseTilePosition) {
@@ -155,16 +159,12 @@ var Watchmaker = function() {
           if(sprite) {
             var tilePos = new Vector2D(x, y);
             var screenPos = tileToScreen(tilePos);
-            if(screenPos.isWithin(-TILE.width - 100, -TILE.height -500, canvas.width() + 200, canvas.height() + 100)) {
+            if(screenPos.isWithin(-TILE.width - 100, -TILE.height -500, canvas.width() + 200, canvas.height() + 500)) {
               spriteArray.push({"x": screenPos.x, "y": screenPos.y, "sprite": sprite})
-            //   if(tilePos.y <= player.tilePosition.y) {
-            //     drawTile(x, y, image);
-            //   }else{
-            //     foreground.push({"pos": tilePos, "image": image})
-            //   }
             }
+          }else{
+            new Sprite(imageFile, ctx, null, null, TILE);
           }
-          //
         }
       }
     }
@@ -181,7 +181,6 @@ var Watchmaker = function() {
     }
 
     spriteArray.sort(function(a,b) { return a.y - b.y});
-
     $.each(spriteArray, function() {
       this.sprite.draw(this.x, this.y)
     });
@@ -240,7 +239,9 @@ var Watchmaker = function() {
         var newTime = new Date().getTime();
         dt = (newTime - prevTime);
         prevTime = newTime;
-        setTimeout(_tick, FRAME_INTERVAL - dt)
+        var t = Math.max(FRAME_INTERVAL - dt, 0);
+        console.log(t)
+        setTimeout(_tick, t)
       };
       _tick();
       

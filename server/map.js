@@ -30,32 +30,40 @@ function createMap(data, key){
 };
 
 var MAP_KEY = {
-  '~': "deadtree",
-  '.': "grass",
-  'D': "road",
-  '#': "brick",
-  "^": "deadtree"
+  'p': "portopotty",
+  '|': "streetlamp",
+  'd': "desk",
+  'A': "americanflag",
+  "^": "deadtree",
+  "&": "livetree"
 }
 
 var MAP_DATA = [
-"                                    ",
+"^                                   ",
 "                ^                   ",
-"     ~                              ",
+"  ^  p                              ",
 "                                    ",
-"             ^                      ",
+"^            ^                      ",
 "                                    ",
-"                             ~      ",
+" ^                        p  p      ",
 "                                    ",
 "        ^                           ",
 "                                    ",
-"                   ~                ",
 "                                    ",
 "                                    ",
 "                                    ",
 "                                    ",
 "                                    ",
 "                                    ",
+"                               &    ",
+"                   ~         & & &  ",
+"        A                     & & & ",
 "                                    ",
+"                                    ",
+"                                    ",
+"                                    ",
+"      |  |  |  |  |  |               ",
+"                      d             ",
 "                                    "]
 
 MAP_DATA = [
