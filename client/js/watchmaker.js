@@ -4,7 +4,7 @@ var Watchmaker = function() {
 
   var TILE = {
     width: 80,
-    height: 45 
+    height: 45
   }
 
   var mouseTilePosition;
@@ -12,7 +12,7 @@ var Watchmaker = function() {
       playerScreenPosition = new Vector2D();
   
   // Drawing
-  var FRAME_RATE = 20;
+  var FRAME_RATE = 30;
   var FRAME_INTERVAL = 1000 / FRAME_RATE;
   var canvas, ctx;
 
@@ -162,6 +162,10 @@ var Watchmaker = function() {
       }
     }
     spriteArray.push({"x": playerScreenPosition.x, "y": playerScreenPosition.y, "sprite": player.sprite})
+    spriteArray.sort(function(a,b) { return a.y - b.y});
+    // console.log($.map(spriteArray, function(s) {
+    //   return [s.y, s.sprite.image.src]
+    // }));
     // console.log(spriteArray.length);
 
     for (id in otherPlayers) {
@@ -169,11 +173,7 @@ var Watchmaker = function() {
       spriteArray.push({x: p.position.x, y: p.position.y, sprite: p.sprite});
     }
 
-    $.each(spriteArray.sort(function(a,b) { b.y - a.y}), function() {
-      // console.log([this.sprite.image.src, this.x, this.y])
-      // if(this.sprite != player.sprite) {
-      //   // debugger;
-      // }
+    $.each(spriteArray, function() {
       this.sprite.draw(this.x, this.y)
     });
   }
