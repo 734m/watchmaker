@@ -58,49 +58,147 @@ Player.SPEED = 1;
 $.extend(Player.prototype, {
   tick: function(dt) {
     if(this.directionName != "stop") {
-      // debugger;
       var change = this.direction.multiplyBy(0.001 * dt);
       var newPosition = this.position.plus(change);
 
-      if(this.directionName == "left" || this.directionName == "up") {
-        var ceilPos = newPosition.ceil();
-        //console.log([this.directionName, newPosition.x, ceilPos.x, this.destination.x]);
+      // cases:
+      //
+      // 1. walking
+      //   a. left
+      //     i.  found destination x, start walking up/down
+      //     ii. didn't find destination x, keep walking
+      //   b. right
+      //     i.  found destination x, start walking up/down
+      //     ii. didn't find destination x, keep walking
+      //   c. up
+      //     i.  found destination y, start walking left/right
+      //     ii. didn't find destination y, keep walking
+      //   d. down
+      //     i.  found destination y, start walking left/right
+      //     ii. didn't find destination y, keep walking
+      //
+      // 2. stop if at destination, snapping to tile
+      //
 
-        if(ceilPos.equals(this.destination)) {
-          this.setPosition(ceilPos.x, ceilPos.y);
-          this.stop();
-          // TODO send an "i arrived!" message to server
-        }else{
-          this.setPosition(newPosition.x, newPosition.y);
+      // case 1
+      // a. walking left
+      if (this.directionName == 'left') {
+
+        // found destination x
+        if (newPosition.x < this.destination.x) {
+
+          // snap
+          this.setPosition(this.destination.x, newPosition.y);
+
+          // now, figure out if i should start walking up or down
+          var direction;
+          if (this.position.y > this.destination.y) {
+            direction = "up";
+          } else if (this.position.y < this.destination.y) {
+            direction = "down";
+          } else {
+            direction = "stop"
+          }
+
+          this.walk(direction, this.destination);
         }
-      }else{
-        this.setPosition(newPosition.x, newPosition.y);
-        if(this.tilePosition.equals(this.destination)) {
-          this.stop();
-          // TODO send an "i arrived!" message to server
-          //console.log(["stopping", this.tilePosition.x, this.position.x])
+
+        // didn't find destination x, yet
+        else {
+          this.setPosition(newPosition.x, newPosition.y);
         }
       }
 
-      // turn the little dude so he can finish walking to his destination
-      if (this.tilePosition.x == this.destination.x) {
-        if (this.tilePosition.equals(this.destination)) {
-          this.stop();
-        } else {
-          var dir = this.tilePosition.y < this.destination.y ? 'down' : 'up'
-          if (dir != this.directionName) {
-            this.walk(dir, this.destination);
+      // b. walking right
+      else
+      if (this.directionName == 'right') {
+
+        // found destination x
+        if (newPosition.x > this.destination.x) {
+
+          // snap
+          this.setPosition(this.destination.x, newPosition.y);
+
+          // now, figure out if i should start walking up or down
+          var direction;
+          if (this.position.y > this.destination.y) {
+            direction = "up";
+          } else if (this.position.y < this.destination.y) {
+            direction = "down";
+          } else {
+            direction = "stop"
           }
+
+          this.walk(direction, this.destination);
         }
-      } else if (this.tilePosition.y == this.destination.y) {
-        if (this.tilePosition.equals(this.destination)) {
-          this.stop();
-        } else {
-          var dir = this.tilePosition.x < this.destination.x ? 'right' : 'left'
-          if (dir != this.directionName) {
-            this.walk(dir, this.destination);
+
+        // didn't find destination x, yet
+        else {
+          this.setPosition(newPosition.x, newPosition.y);
+        }
+      }
+
+      // c. walking up
+      else
+      if (this.directionName == 'up') {
+
+        // found destination y
+        if(newPosition.y < this.destination.y) {
+
+          // snap
+          this.setPosition(newPosition.x, this.destination.y);
+
+          // now, figure out if i should start walking left or right
+          var direction;
+          if (this.position.x > this.destination.x) {
+            direction = "left";
+          } else if (this.position.x < this.destination.x) {
+            direction = "right";
+          } else {
+            direction = "stop"
           }
+
+          this.walk(direction, this.destination);
         }
+
+        // didn't find destination y, yet
+        else {
+          this.setPosition(newPosition.x, newPosition.y);
+        }
+      }
+
+      // d. walking down
+      else
+      if (this.directionName == 'down') {
+
+        // found destination y
+        if(newPosition.y > this.destination.y) {
+
+          // snap
+          this.setPosition(newPosition.x, this.destination.y);
+
+          // now, figure out if i should start walking left or right
+          var direction;
+          if (this.position.x > this.destination.x) {
+            direction = "left";
+          } else if (this.position.x < this.destination.x) {
+            direction = "right";
+          } else {
+            direction = "stop"
+          }
+
+          this.walk(direction, this.destination);
+        }
+
+        // didn't find destination y, yet
+        else {
+          this.setPosition(newPosition.x, newPosition.y);
+        }
+      }
+
+      // case 2
+      if (this.position.equals(this.destination)) {
+        this.stop();
       }
 
     }
