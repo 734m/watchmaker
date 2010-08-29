@@ -178,7 +178,7 @@ var Watchmaker = function() {
       ctx = canvas.get(0).getContext("2d");
 
       // Set up socket
-      io.setPath('/client/');
+      io.setPath('/js/');
       var parts = window.location.host.split(":");
       socket = new io.Socket(parts[0], parts[1]);
       socket.connect();
