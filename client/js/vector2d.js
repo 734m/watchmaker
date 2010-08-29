@@ -1,9 +1,16 @@
 
 // --- VECTOR2D ------------------------------------------------------------
 
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
 var Vector2D = function(x, y) {
   this.x = x || 0;
   this.y = y || 0;
+}
+Vector2D.random = function(x1, y1, x2, y2) {
+  return new Vector2D(randomInt(x1, x2), randomInt(y1, y2));
 }
 Vector2D.prototype = {
   subtract: function(v2) {
