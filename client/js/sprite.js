@@ -71,28 +71,8 @@ var Sprite = function() {
   return SpriteClass;
 }();
 
-var Player = function(ctx, tileSize, position) {
-  this.sprite = new Sprite("images/gifter.png", ctx, 80, 9, tileSize, {
-    "walk_left": [0,1],
-    "walk_right": [2,3],
-    "default": [4],
-    "walk_down": [5,6],
-    "walk_up": [7,8]
-  }, this.afterDraw);
-  this.sprite = new Sprite("images/giftersuit.png", ctx, 80, 9, tileSize, {
-    "walk_left": [1,2],
-    "walk_right": [3,4],
-    "default": [0],
-    "walk_down": [5,6],
-    "walk_up": [7,8]
-  }, this.afterDraw);
-  this.sprite = new Sprite("images/littleguy.png", ctx, 80, 9, tileSize, {
-    "walk_left": [2,3],
-    "walk_right": [4,5],
-    "default": [0,1],
-    "walk_down": [6,7],
-    "walk_up": [8,9]
-  }, this.afterDraw);
+var Player = function(ctx, tileSize, appearanceName, position) {
+  this.sprite = Player.getAppearanceSprite(appearanceName, ctx, tileSize);
   this.chatBubbleSprite = new Sprite("images/talkbubble.png", ctx, 42*5, 3, tileSize, {
     "default": [0,1,2]
   })
@@ -106,6 +86,39 @@ var Player = function(ctx, tileSize, position) {
 Player.HSPEED = 2;
 Player.VSPEED = 3;
 Player.CHAT_BUBBLE_TIMEOUT = 10000;
+Player.APPEARANCES = ["gifter", "littleguy", "giftersuit"];
+Player.getAppearanceSprite = function(name, ctx, tileSize) {
+  console.log(["appearance: ", name])
+  if(Player.APPEARANCES.indexOf(name) < 0) {
+    name = Player.APPEARANCES[0]
+  }
+  if(name == "giftersuit") {
+    return new Sprite("images/giftersuit.png", ctx, 80, 9, tileSize, {
+      "walk_left": [1,2],
+      "walk_right": [3,4],
+      "default": [0],
+      "walk_down": [5,6],
+      "walk_up": [7,8]
+    }, this.afterDraw);
+  }else if(name == "littleguy") {
+    return new Sprite("images/littleguy.png", ctx, 80, 9, tileSize, {
+      "walk_left": [2,3],
+      "walk_right": [4,5],
+      "default": [0,1],
+      "walk_down": [6,7],
+      "walk_up": [8,9]
+    }, this.afterDraw);
+  }else{
+    return new Sprite("images/gifter.png", ctx, 80, 9, tileSize, {
+      "walk_left": [0,1],
+      "walk_right": [2,3],
+      "default": [4],
+      "walk_down": [5,6],
+      "walk_up": [7,8]
+    }, this.afterDraw);
+  }
+}
+
 $.extend(Player.prototype, {
   tick: function(dt) {
     this.sprite.tick(dt);
