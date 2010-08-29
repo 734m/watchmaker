@@ -100,8 +100,8 @@
   <div class="meta">
     <form>
       <input type="text" class='text' name="q"/>
-      <input type="submit" class='submit' value='Search'/>
-      
+      <input type="submit" class='submit' id="talk" value='Talk' />
+      <input type="submit" class='submit' id="search" value='Search' />
     </form>
     <img class="title" src="images/title.png" alt="Brent Fitzgerald + Huned Botee. 8/29/2010."/>
     <a href="http://nodeknockout.com/teams/734m"><img class="nko" src="images/voteko.png"/></a>
@@ -125,11 +125,22 @@
       })
       $("input:text").select();
       $("form").submit(function() {
+        return false;
+      });
+
+      $("input#talk").click(function(){
+        var input = $("input:text");
+        Watchmaker.talk(input.val());
+        input.val("")
+        return false;
+      });
+
+      $("input#search").click(function(){
         var input = $("input:text");
         Watchmaker.search(input.val());
         input.val("")
         return false;
-      })
+      });
     });
   </script>
 </body>
