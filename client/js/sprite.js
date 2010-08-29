@@ -54,14 +54,17 @@ var Sprite = function() {
         var frameIndex = Math.floor(this.elapsed / this.interval) % this.frames.length;
       }
       var frame = this.frames[frameIndex];
-      this.ctx.drawImage(this.image, 
-        this.frameWidth * frame, 0, 
-        this.frameWidth, 
-        this.image.height, // source
-        x - this.positionOffset.x, 
-        y - (this.image.height - this.positionOffset.y), 
-        this.frameWidth, 
-        this.image.height) // dest
+      try {
+        this.ctx.drawImage(this.image, 
+          this.frameWidth * frame, 0, 
+          this.frameWidth, 
+          this.image.height, // source
+          x - this.positionOffset.x, 
+          y - (this.image.height - this.positionOffset.y), 
+          this.frameWidth, 
+          this.image.height) // dest
+      } catch(e) {
+      } 
       if(this.afterDraw) {
         this.afterDraw(x, y);
       }
@@ -90,10 +93,6 @@ Player.VSPEED = 3;
 Player.CHAT_BUBBLE_TIMEOUT = 10000;
 Player.APPEARANCES = ["gifter", "littleguy", "giftersuit", "beast"];
 Player.getAppearanceSprite = function(name, ctx, tileSize) {
-  // console.log(["appearance: ", name])
-  // if(Player.APPEARANCES.indexOf(name) < 0) {
-  //   name = Player.APPEARANCES[0]
-  // }
   if(name == "giftersuit") {
     return new Sprite("images/giftersuit.png", ctx, 80, 9, tileSize, {
       "walk_left": [1,2],

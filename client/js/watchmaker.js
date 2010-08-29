@@ -51,7 +51,6 @@ var Watchmaker = function() {
     },
 
     interact: function(cmd) {
-      console.log(cmd);
     },
 
     set_map: function(cmd) {
@@ -94,7 +93,6 @@ var Watchmaker = function() {
       onServerInit(cmd);
     }
     player.playerId = player.playerId || socket.transport.sessionid;
-    console.log('server says: ' + cmd);
     if(commands[cmd.name]) {
       commands[cmd.name](cmd);
     }
@@ -144,7 +142,6 @@ var Watchmaker = function() {
     // Draw loop
     var prevTime, dt, _tick;
     _tick = function() {
-      // console.log("_tick")
       if(prevTime === undefined) {
         prevTime = new Date().getTime();
         dt = 0;
@@ -154,7 +151,6 @@ var Watchmaker = function() {
       dt = (newTime - prevTime);
       prevTime = newTime;
       var t = Math.max(FRAME_INTERVAL - dt, 0);
-      //console.log(t)
       setTimeout(_tick, t)
     };
     _tick();

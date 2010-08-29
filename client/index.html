@@ -157,14 +157,11 @@
         .select()
       $("input:text")
         .focus(function() {
-          console.log(["lastFocused", this])
           lastFocused = $(this);
         });
       $("form").submit(function() {
         var input = lastFocused;
-        console.log([input[0], $("input.search")[0]]);
         if(input[0] == $("input.search")[0]) {
-          console.log('searching');
           Watchmaker.search(input.val());
         }else{
           Watchmaker.talk(input.val());
