@@ -73,6 +73,12 @@ var Watchmaker = function() {
       if (otherPlayers.hasOwnProperty(cmd.playerId)) {
         delete otherPlayers[cmd.playerId];
       }
+    },
+    
+    talk: function(cmd) {
+      if (otherPlayers.hasOwnProperty(cmd.playerId)) {
+        otherPlayers[cmd.playerId].talk(cmd.message);
+      }
     }
   }
 
@@ -245,6 +251,13 @@ var Watchmaker = function() {
       };
       _tick();
       
+    },
+    talk: function(message) {
+      player.talk(message);
+      socket.send(JSON.stringify({ 
+        "name": "talk",
+        "message": message,
+        "playerId": player.playerId }))
     }
   }
 }()
