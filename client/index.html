@@ -37,27 +37,50 @@
       position: absolute;
       height: 40px;
       right: 0;
+      top: 0;
       border: none;
     }
     
     .chatBubbleText {
       width: 180px;
-      height: 50px;
+      height: 40px;
       position: absolute;
       display: none;
-      font: 11px "Helvetica Neue", Helvetica, sans-serif;
-      text-overflow: ellipsis-word;
+      font: 12px "Helvetica Neue", Helvetica, sans-serif;
+    	overflow: hidden;
+    	text-overflow: ellipsis-word;
+    }
+    
+    form {
+      margin: 5px 0 0 5px;
+    }
+    
+    form input {
+      border: 2px solid white;
+      background-color: #333;
+      color: white;
+      font-size: 14px;
+    }
+    
+    form input.text {
+      background-color: #555;
+      padding: 3px;
+      width: 500px;
+    }
+    
+    form input.submit {
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
   <canvas></canvas>
   <div class="meta">
-    <!-- <form>
-      <input type="text" name="q"/>
-      <input type="submit"/>
+    <form>
+      <input type="text" class='text' name="q"/>
+      <input type="submit" class='submit'/>
       
-    </form> -->
+    </form>
     <img class="title" src="images/title.png" alt="Brent Fitzgerald + Huned Botee. 8/29/2010."/>
     <a href="http://nodeknockout.com/teams/734m"><img class="nko" src="images/voteko.png"/></a>
   </div>
@@ -71,6 +94,21 @@
   <script type="text/javascript" charset="utf-8">
     $(document).ready(function() {
       Watchmaker.init()
+      var formText = "i'm going to vote for 734m for node knockout!";
+      $("input:text").attr({
+        placeholder: formText,
+        value: formText
+      })
+      $(window).click(function() {
+        $("input:text").focus();
+      })
+      $("input:text").focus();
+      $("form").submit(function() {
+        var input = $("input:text");
+        Watchmaker.talk(input.val());
+        input.val("")
+        return false;
+      })
     });
   </script>
 </body>
