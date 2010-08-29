@@ -25,7 +25,6 @@ var Watchmaker = function() {
   var commands = {
     init: function(cmd) {
       player.setPosition(cmd.x, cmd.y)
-      repaint();
     },
 
     move: function(cmd) {
@@ -112,7 +111,7 @@ var Watchmaker = function() {
   
   function repaint(dt) {
     if(dt === undefined) dt = 0;
-    ctx.fillStyle = "rgb(220,220,220)";  
+    ctx.fillStyle = "rgba(255,255,255, 0.8)";  
     ctx.fillRect (0,0,canvas.width(), canvas.height());  
 
     if(mouseTilePosition) {
@@ -194,7 +193,9 @@ var Watchmaker = function() {
         var newTime = new Date().getTime();
         dt = (newTime - prevTime);
         prevTime = newTime;
-        setTimeout(_tick, FRAME_INTERVAL - dt)
+        var t = Math.max(FRAME_INTERVAL - dt, 0);
+        console.log(t)
+        setTimeout(_tick, t)
       };
       _tick();
       
