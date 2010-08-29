@@ -278,7 +278,7 @@ var Watchmaker = function() {
         "playerId": player.playerId }))
     },
     search: function(message) {
-      player.talk("thinking about \"" + message + '"...');
+      player.talk('Thinking about "' + message + '"...');
       socket.send(JSON.stringify({
         "name": "search",
         "message": message,
