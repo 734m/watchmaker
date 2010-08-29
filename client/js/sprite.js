@@ -91,7 +91,7 @@ var Player = function(ctx, tileSize, position) {
 }
 Player.HSPEED = 2;
 Player.VSPEED = 3;
-Player.CHAT_BUBBLE_TIMEOUT = 5000;
+Player.CHAT_BUBBLE_TIMEOUT = 10000;
 $.extend(Player.prototype, {
   tick: function(dt) {
     this.sprite.tick(dt);
