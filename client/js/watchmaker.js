@@ -240,7 +240,7 @@ var Watchmaker = function() {
         dt = (newTime - prevTime);
         prevTime = newTime;
         var t = Math.max(FRAME_INTERVAL - dt, 0);
-        console.log(t)
+        //console.log(t)
         setTimeout(_tick, t)
       };
       _tick();
