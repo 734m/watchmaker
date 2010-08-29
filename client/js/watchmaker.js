@@ -22,6 +22,7 @@ var Watchmaker = function() {
 
   // Sprites
   var otherPlayers = {};
+  var playerId;
   var player;
   
   // Socket
@@ -33,7 +34,7 @@ var Watchmaker = function() {
         player.setPosition(cmd.x, cmd.y);
       } else {
         var playerId = cmd.playerId;
-        otherPlayers[playerId] = new Player(ctx, TILE);
+        otherPlayers[playerId] = new Player(ctx, TILE, cmd.appearance);
         otherPlayers[playerId].playerId = playerId;
         otherPlayers[playerId].setPosition(cmd.x, cmd.y);
       }
@@ -63,7 +64,7 @@ var Watchmaker = function() {
       for (var playerId in cmd.data) {
         if (playerId != player.playerId) {
           //debugger;
-          otherPlayers[playerId] = new Player(ctx, TILE);
+          otherPlayers[playerId] = new Player(ctx, TILE, cmd.data[playerId].appearance);
           otherPlayers[playerId].playerId = playerId;
           otherPlayers[playerId].setPosition(cmd.data[playerId].x, cmd.data[playerId].y);
         }
@@ -84,9 +85,12 @@ var Watchmaker = function() {
   }
 
   function dispatch(cmd) {
+    cmd = $.parseJSON(cmd);
+    if(cmd.name === "init" && typeof(player) === 'undefined') {
+      onServerInit(cmd);
+    }
     player.playerId = player.playerId || socket.transport.sessionid;
     console.log('server sezz: ' + cmd);
-    cmd = $.parseJSON(cmd);
     if(commands[cmd.name]) {
       commands[cmd.name](cmd);
     }
@@ -101,6 +105,58 @@ var Watchmaker = function() {
       y2: target.y }))
     
   }
+  
+  function onServerInit(serverData) {
+
+    player = new Player(ctx, TILE, serverData && serverData.appearance);
+    Watchmaker.player = player;
+
+    // Dimensions
+    var body = $("body");
+    var w = $(window).width();
+    var h = $(window).height();
+    $(window).resize(function() {
+      body.css('height', $(window).height() - 10)
+      canvas.attr('width', $(body).width());
+      canvas.attr('height', $(body).height() - 30);
+      playerScreenPosition = new Vector2D(canvas.width() - TILE.width, canvas.height() - TILE.height).divideBy(2).floor();
+      repaint()
+    }).resize()
+    
+    // Setup event handlers
+    canvas.mousemove(function(event) {
+      mouseScreenPosition = new Vector2D(event.clientX,event.clientY);
+    })
+    canvas.mousedown(function(event) {
+      mouseDown = true;
+      var screenPosition = new Vector2D(event.clientX,event.clientY);
+      var p = screenToTile(screenPosition);
+      moveRequest(p);
+    })
+    $(window).mouseup(function(event) {
+      mouseDown = false;
+    })
+    
+    // Draw loop
+    var prevTime, dt, _tick;
+    _tick = function() {
+      // console.log("_tick")
+      if(prevTime === undefined) {
+        prevTime = new Date().getTime();
+        dt = 0;
+      }
+      tick(dt);
+      var newTime = new Date().getTime();
+      dt = (newTime - prevTime);
+      prevTime = newTime;
+      var t = Math.max(FRAME_INTERVAL - dt, 0);
+      //console.log(t)
+      setTimeout(_tick, t)
+    };
+    _tick();
+    
+  }
+    
     
   function tileIsOnScreen(tilePosition) {
     var screenPosition = tileToScreen(tilePosition);
@@ -186,7 +242,7 @@ var Watchmaker = function() {
         }
       }
     }
-    spriteArray.push({"x": playerScreenPosition.x, "y": playerScreenPosition.y, "sprite": player.sprite})
+    spriteArray.push({"x": playerScreenPosition.x, "y": playerScreenPosition.y, "sprite": player.sprite, playerOrder: player.playerId, zPreference: 1})
     // console.log($.map(spriteArray, function(s) {
     //   return [s.y, s.sprite.image.src]
     // }));
@@ -195,10 +251,33 @@ var Watchmaker = function() {
     for (var playerId in otherPlayers) {
       var otherPlayer = otherPlayers[playerId];
       var screenPos = tileToScreen(otherPlayer.position);
-      spriteArray.push({x: screenPos.x, y: screenPos.y, sprite: otherPlayer.sprite});
+      spriteArray.push({x: screenPos.x, y: screenPos.y, sprite: otherPlayer.sprite, playerOrder: player.playerId, zPreference: 1});
     }
 
-    spriteArray.sort(function(a,b) { return (a.y - b.y) || ((a.sprite.image.src === player.sprite.image.src) ? 1 : 0) || ((b.sprite.image.src === player.sprite.image.src) ? -1 : 0) || (a.x - b.x) });
+    spriteArray.sort(function(a,b) { 
+      if(a.y != b.y) {
+        return (a.y - b.y); 
+      }
+      if(a.zPreference != b.zPreference) {
+        if(a.zPrefernce) return 1;
+        else if(b.zPrefernce) return -1
+      }
+      if(a.sprite.image.src === player.sprite.image.src) return 1;
+      if(b.sprite.image.src === player.sprite.image.src) return -1;
+      if(a.zPreference && b.zPreference) {
+        var d = a.sprite.image.height - b.sprite.image.height;
+        if(d != 0) return d;
+      }
+      if(a.playerOrder && b.playerOrder) {
+        return a.playerOrder - b.playerOrder;
+      }
+      return (a.x - b.x);
+    });
+      
+      
+      // for(var playerId in otherPlayer)
+      // 
+      // return (a.y - b.y); || ((a.sprite.image.src === player.sprite.image.src) ? 1 : 0) || ((b.sprite.image.src === player.sprite.image.src) ? -1 : 0) || (a.x - b.x) });
     $.each(spriteArray, function() {
       this.sprite.draw(this.x, this.y)
     });
@@ -219,55 +298,9 @@ var Watchmaker = function() {
       socket = new io.Socket(parts[0], parts[1]);
       socket.connect();
       socket.on('message', dispatch);
-
-      player = new Player(ctx, TILE);
-      Watchmaker.player = player;
-
-      // Dimensions
-      var body = $("body");
-      var w = $(window).width();
-      var h = $(window).height();
-      $(window).resize(function() {
-        body.css('height', $(window).height() - 10)
-        canvas.attr('width', $(body).width());
-        canvas.attr('height', $(body).height() - 30);
-        playerScreenPosition = new Vector2D(canvas.width() - TILE.width, canvas.height() - TILE.height).divideBy(2).floor();
-        repaint()
-      }).resize()
-      
-      // Setup event handlers
-      canvas.mousemove(function(event) {
-        mouseScreenPosition = new Vector2D(event.clientX,event.clientY);
-      })
-      canvas.mousedown(function(event) {
-        mouseDown = true;
-        var screenPosition = new Vector2D(event.clientX,event.clientY);
-        var p = screenToTile(screenPosition);
-        moveRequest(p);
-      })
-      $(window).mouseup(function(event) {
-        mouseDown = false;
-      })
-      
-      // Draw loop
-      var prevTime, dt, _tick;
-      _tick = function() {
-        // console.log("_tick")
-        if(prevTime === undefined) {
-          prevTime = new Date().getTime();
-          dt = 0;
-        }
-        tick(dt);
-        var newTime = new Date().getTime();
-        dt = (newTime - prevTime);
-        prevTime = newTime;
-        var t = Math.max(FRAME_INTERVAL - dt, 0);
-        //console.log(t)
-        setTimeout(_tick, t)
-      };
-      _tick();
-      
     },
+    
+
     talk: function(message) {
       player.talk(message);
       socket.send(JSON.stringify({ 
