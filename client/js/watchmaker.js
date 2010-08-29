@@ -248,11 +248,6 @@ var Watchmaker = function() {
       $(window).mouseup(function(event) {
         mouseDown = false;
       })
-      canvas.click(function(event) {
-        var screenPosition = new Vector2D(event.clientX,event.clientY);
-        var p = screenToTile(screenPosition);
-        moveRequest(p);
-      })
       
       // Draw loop
       var prevTime, dt, _tick;
