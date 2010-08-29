@@ -61,6 +61,7 @@ $.extend(Player.prototype, {
       // debugger;
       var change = this.direction.multiplyBy(0.001 * dt);
       var newPosition = this.position.plus(change);
+
       if(this.directionName == "left" || this.directionName == "up") {
         var ceilPos = newPosition.ceil();
         //console.log([this.directionName, newPosition.x, ceilPos.x, this.destination.x]);
@@ -68,6 +69,7 @@ $.extend(Player.prototype, {
         if(ceilPos.equals(this.destination)) {
           this.setPosition(ceilPos.x, ceilPos.y);
           this.stop();
+          // TODO send an "i arrived!" message to server
         }else{
           this.setPosition(newPosition.x, newPosition.y);
         }
@@ -75,6 +77,7 @@ $.extend(Player.prototype, {
         this.setPosition(newPosition.x, newPosition.y);
         if(this.tilePosition.equals(this.destination)) {
           this.stop();
+          // TODO send an "i arrived!" message to server
           //console.log(["stopping", this.tilePosition.x, this.position.x])
         }
       }
@@ -109,8 +112,6 @@ $.extend(Player.prototype, {
   
   setPosition: function(x, y) {
     this.position = new Vector2D(x,y);
-    
-    // FIX ME - decide tile by rounding, not by floor
     this.tilePosition = this.position.floor();
     this.tileOffset = this.position.subtract(this.tilePosition);
   },
