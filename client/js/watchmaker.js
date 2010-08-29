@@ -7,6 +7,8 @@ var Watchmaker = function() {
     height: 45
   }
 
+  var tileSprites = {};
+
   var mouseTilePosition;
       mouseScreenPosition = new Vector2D(),
       playerScreenPosition = new Vector2D();
@@ -29,7 +31,7 @@ var Watchmaker = function() {
         player.setPosition(cmd.x, cmd.y);
       } else {
         var playerId = cmd.playerId;
-        otherPlayers[playerId] = new Player(ctx);
+        otherPlayers[playerId] = new Player(ctx, TILE);
         otherPlayers[playerId].playerId = playerId;
         otherPlayers[playerId].setPosition(cmd.x, cmd.y);
       }
@@ -59,7 +61,7 @@ var Watchmaker = function() {
       for (var playerId in cmd.data) {
         if (playerId != player.playerId) {
           //debugger;
-          otherPlayers[playerId] = new Player(ctx);
+          otherPlayers[playerId] = new Player(ctx, TILE);
           otherPlayers[playerId].playerId = playerId;
           otherPlayers[playerId].setPosition(cmd.data[playerId].x, cmd.data[playerId].y);
         }
@@ -81,23 +83,7 @@ var Watchmaker = function() {
       commands[cmd.name](cmd);
     }
   }
-  
-  function setupSprites(ctx) {
-    new Sprite("images/gifter.png", ctx, 80, 9, TILE, {
-      "walk_left": [0,1],
-      "walk_right": [2,3],
-      "default": [4],
-      "walk_down": [5,6],
-      "walk_up": [7,8]
-    });
-    // new Sprite("images/deadtree.png", ctx, null, null, TILE);
-    // new Sprite("images/streetlamp.png", ctx, null, null, TILE);
-    // new Sprite("images/americanflag.png", ctx, null, null, TILE);
-    // new Sprite("images/desk.png", ctx, null, null, TILE);
-    // new Sprite("images/portopotty.png", ctx, null, null, TILE);
-  }
-  
-  
+    
   function tileIsOnScreen(tilePosition) {
     var screenPosition = tileToScreen(tilePosition);
     return pointIsOnScreen(screenPosition);
@@ -154,15 +140,15 @@ var Watchmaker = function() {
         var tileType = Map.tiles[x][y];
         if(tileType) {
           var imageFile = "images/" + tileType + ".png"
-          var sprite = Sprite.SPRITES[imageFile];
-          if(sprite) {
+          var sprite = tileSprites[imageFile];
+          if(sprite && sprite.loaded) {
             var tilePos = new Vector2D(x, y);
             var screenPos = tileToScreen(tilePos);
             if(screenPos.isWithin(-TILE.width - 100, -TILE.height -500, canvas.width() + 200, canvas.height() + 500)) {
               spriteArray.push({"x": screenPos.x, "y": screenPos.y, "sprite": sprite})
             }
           }else{
-            new Sprite(imageFile, ctx, null, null, TILE);
+            tileSprites[imageFile] = new Sprite(imageFile, ctx, null, null, TILE);
           }
         }
       }
@@ -190,7 +176,6 @@ var Watchmaker = function() {
     init: function() {
       canvas = $("canvas");
       ctx = canvas.get(0).getContext("2d");
-      setupSprites(ctx);
 
       // Set up socket
       io.setPath('/client/');
@@ -199,7 +184,7 @@ var Watchmaker = function() {
       socket.connect();
       socket.on('message', dispatch);
 
-      player = new Player(ctx);
+      player = new Player(ctx, TILE);
       var body = $("body");
       var w = $(window).width();
       var h = $(window).height();

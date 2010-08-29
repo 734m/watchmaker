@@ -27,14 +27,17 @@ var Sprite = function() {
     this.numFrames = numFrames || 1;
     this.animations = animations || {"default": [0]};
     this.frames = [];
-    SpriteClass.SPRITES[source] = this;
     this.setAnimation("default", 100000);
   }
-  SpriteClass.SPRITES = {};
   
   $.extend(SpriteClass.prototype, {
     setAnimation: function(name, interval) {
-      this.frames = this.animations[name] || [0];
+      var animation = this.animations[name];
+      if(typeof(animation) === 'function') {
+        this.frames = animation;
+      }else{
+        this.frames = animation || [0];
+      }
       this.interval = interval
       this.elapsed = 0;
     },
@@ -67,8 +70,17 @@ var Sprite = function() {
   return SpriteClass;
 }();
 
-var Player = function(ctx, position) {
-  this.sprite = Sprite.SPRITES["images/gifter.png"];
+var Player = function(ctx, tileSize, position) {
+  this.sprite = new Sprite("images/gifter.png", ctx, 80, 9, tileSize, {
+    "walk_left": [0,1],
+    "walk_right": [2,3],
+    "default": [4],
+    "walk_down": [5,6],
+    "walk_up": [7,8]
+  });
+  this.chatBubbleSprite = new Sprite("images/talkbubble.png", ctx, 42, 3, tileSize, {
+    "default": function() { return Math.floor(Math.random() * 3) }
+  })
   this.setPosition(0,0);
   this.destination = this.position;
   this.direction = DIRECTIONS.none;
@@ -228,6 +240,9 @@ $.extend(Player.prototype, {
 
   draw: function(screenPosition) {
     this.sprite.draw(screenPosition.x, screenPosition.y)
+    if(message != null) {
+      this.chatBubbleSprite.draw(screenPosition.x, screenPosition.y - 40);
+    }
   },
   
   setPosition: function(x, y) {
@@ -254,5 +269,10 @@ $.extend(Player.prototype, {
     this.sprite.setAnimation("default", 1000);
     this.stopRequested = true;
     this.direction = DIRECTIONS.none;
+  },
+  
+  talk: function(message) {
+    this.message = message;
   }
 });
+

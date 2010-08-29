@@ -1,5 +1,6 @@
 function createMap(data, key){
   var tiles = {};
+  var start = null;
   function set(x, y, value) {
     if(!tiles[x]) {
       tiles[x] = {};
@@ -18,14 +19,19 @@ function createMap(data, key){
       var c = row[x];
       var type = key[c];
       if(type) {
-        set(x, y, type)
+        if(type == "start") {
+          start = {"x": x, "y": y}
+        }else{
+          set(x, y, type)
+        }
       }
     }
   }
   return {
     "width": maxX,
     "height": maxY,
-    "tiles": tiles
+    "tiles": tiles,
+    "start": start
   };
 };
 
@@ -82,12 +88,12 @@ MAP_DATA = [
 "                 ",
 "            ^&&  ",
 "                 ",
-"   ^             ",
+"   ^     d       ",
 "                 ",
 "                 ",
 "                 ",
 "       1    ^    ",
-"       d         ",
+"                 ",
 " ^               ",
 "        *        ",
 "           ^     ",
