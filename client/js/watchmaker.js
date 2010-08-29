@@ -247,10 +247,6 @@ var Watchmaker = function() {
       }
     }
     spriteArray.push({"x": playerScreenPosition.x, "y": playerScreenPosition.y, "sprite": player.sprite, playerOrder: player.playerId, zPreference: 1})
-    // console.log($.map(spriteArray, function(s) {
-    //   return [s.y, s.sprite.image.src]
-    // }));
-    // console.log(spriteArray.length);
 
     for (var playerId in otherPlayers) {
       var otherPlayer = otherPlayers[playerId];
@@ -263,8 +259,8 @@ var Watchmaker = function() {
         return (a.y - b.y); 
       }
       if(a.zPreference != b.zPreference) {
-        if(a.zPrefernce) return 1;
-        else if(b.zPrefernce) return -1
+        if(a.zPreference) return 1;
+        else if(b.zPreference) return -1
       }
       if(a.sprite.image.src === player.sprite.image.src) return 1;
       if(b.sprite.image.src === player.sprite.image.src) return -1;
