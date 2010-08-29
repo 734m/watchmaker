@@ -9,6 +9,7 @@
       width: 100%;
       height: 100%;
       background-color: #e3dedc;
+      overflow: hidden;
     }
     body, canvas {
       cursor: pointer;
@@ -38,11 +39,25 @@
       right: 0;
       border: none;
     }
+    
+    .chatBubbleText {
+      width: 180px;
+      height: 50px;
+      position: absolute;
+      display: none;
+      font: 11px "Helvetica Neue", Helvetica, sans-serif;
+      text-overflow: ellipsis-word;
+    }
   </style>
 </head>
 <body>
   <canvas></canvas>
   <div class="meta">
+    <!-- <form>
+      <input type="text" name="q"/>
+      <input type="submit"/>
+      
+    </form> -->
     <img class="title" src="images/title.png" alt="Brent Fitzgerald + Huned Botee. 8/29/2010."/>
     <a href="http://nodeknockout.com/teams/734m"><img class="nko" src="images/voteko.png"/></a>
   </div>
