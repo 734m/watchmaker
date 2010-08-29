@@ -63,20 +63,43 @@ $.extend(Player.prototype, {
       var newPosition = this.position.plus(change);
       if(this.directionName == "left" || this.directionName == "up") {
         var ceilPos = newPosition.ceil();
-        console.log([this.directionName, newPosition.x, ceilPos.x, this.destination.x]);
+        //console.log([this.directionName, newPosition.x, ceilPos.x, this.destination.x]);
+
         if(ceilPos.equals(this.destination)) {
           this.setPosition(ceilPos.x, ceilPos.y);
           this.stop();
         }else{
-          this.setPosition(newPosition.x, newPosition.y)
+          this.setPosition(newPosition.x, newPosition.y);
         }
       }else{
         this.setPosition(newPosition.x, newPosition.y);
         if(this.tilePosition.equals(this.destination)) {
           this.stop();
-          console.log(["stopping", this.tilePosition.x, this.position.x])
+          //console.log(["stopping", this.tilePosition.x, this.position.x])
         }
       }
+
+      // turn the little dude so he can finish walking to his destination
+      if (this.tilePosition.x == this.destination.x) {
+        if (this.tilePosition.equals(this.destination)) {
+          this.stop();
+        } else {
+          var dir = this.tilePosition.y < this.destination.y ? 'down' : 'up'
+          if (dir != this.directionName) {
+            this.walk(dir, this.destination);
+          }
+        }
+      } else if (this.tilePosition.y == this.destination.y) {
+        if (this.tilePosition.equals(this.destination)) {
+          this.stop();
+        } else {
+          var dir = this.tilePosition.x < this.destination.x ? 'right' : 'left'
+          if (dir != this.directionName) {
+            this.walk(dir, this.destination);
+          }
+        }
+      }
+
     }
   },
 
