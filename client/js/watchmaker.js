@@ -118,28 +118,43 @@ var Watchmaker = function() {
     }
   
     // this is super inefficient
-    var foreground = [];
+    var spriteArray = [];
     for(var x in Map.tiles) {
       for(var y in Map.tiles[x]) {
-        // var tileType = Map.tiles[x][y];
-        // if(tileType) {
-        //   var imageFile = "images/" + tileType + ".png"
-        //   var image = Images.loaded[imageFile];
-        //   if(image) {
-        //     if(screenPos.isWithin(-TILE.width - 100, -TILE.height -500, canvas.width() + 200, canvas.height() + 100)) {
-        //       var tilePos = new Vector2D(x, y);
-        //       if(tilePos.y <= player.tilePosition.y) {
-        //         drawTile(x, y, image);
-        //       }else{
-        //         foreground.push({"pos": tilePos, "image": image})
-        //       }
-        //     }
-        //   }
-        //   //
-        // }
+        var tileType = Map.tiles[x][y];
+        if(tileType) {
+          var imageFile = "images/" + tileType + ".png"
+          var sprite = Sprite.SPRITES[imageFile];
+          if(sprite) {
+            var tilePos = new Vector2D(x, y);
+            var screenPos = tileToScreen(tilePos);
+            if(screenPos.isWithin(-TILE.width - 100, -TILE.height -500, canvas.width() + 200, canvas.height() + 100)) {
+              spriteArray.push({"x": screenPos.x, "y": screenPos.y, "sprite": sprite})
+            //   if(tilePos.y <= player.tilePosition.y) {
+            //     drawTile(x, y, image);
+            //   }else{
+            //     foreground.push({"pos": tilePos, "image": image})
+            //   }
+            }
+          }
+          //
+        }
       }
     }
-    player.draw(playerScreenPosition, dt);
+    spriteArray.push({"x": playerScreenPosition.x, "y": playerScreenPosition.y, "sprite": player.sprite})
+    // console.log(spriteArray.length);
+    $.each(spriteArray.sort(function(a,b) { b.y - a.y}), function() {
+      console.log([this.sprite.image.src, this.x, this.y])
+      // if(this.sprite != player.sprite) {
+      //   // debugger;
+      // }
+      this.sprite.draw(this.x, this.y)
+    })
+    // debugger;
+
+    // for(var i in  {
+    //   player.draw(playerScreenPosition, dt);
+    // }
   }
 
   return {

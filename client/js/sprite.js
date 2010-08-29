@@ -29,6 +29,7 @@ var Sprite = function() {
     this.animations = animations || {"default": [0]};
     this.frames = [];
     SpriteClass.SPRITES[source] = this;
+    this.setAnimation("default", 100000);
   }
   SpriteClass.SPRITES = {};
   
@@ -39,12 +40,19 @@ var Sprite = function() {
       this.elapsed = 0;
     },
     
-    draw: function(x, y, dt) {
+    tick: function(dt) {
+      this.elapsed += dt;
+    },
+    
+    draw: function(x, y) {
       if(!this.loaded) {
         return;
       }
-      this.elapsed += dt;
-      var frameIndex = Math.floor(this.elapsed / this.interval) % this.frames.length;
+      if(this.frames.length == 0) {
+        var frameIndex = 0;
+      }else{
+        var frameIndex = Math.floor(this.elapsed / this.interval) % this.frames.length;
+      }
       var frame = this.frames[frameIndex];
       this.ctx.drawImage(this.image, 
         this.frameWidth * frame, 0, 
@@ -71,6 +79,7 @@ Player.HSPEED = 1;
 Player.VSPEED = 1.3;
 $.extend(Player.prototype, {
   tick: function(dt) {
+    this.sprite.tick(dt);
     if(this.directionName != "stop") {
       var change = this.direction.multiplyBy(0.001 * dt);
       var newPosition = this.position.plus(new Vector2D(change.x * Player.HSPEED, change.y * Player.VSPEED));
@@ -218,8 +227,8 @@ $.extend(Player.prototype, {
     }
   },
 
-  draw: function(screenPosition, dt) {
-    this.sprite.draw(screenPosition.x, screenPosition.y, dt)
+  draw: function(screenPosition) {
+    this.sprite.draw(screenPosition.x, screenPosition.y)
   },
   
   setPosition: function(x, y) {
