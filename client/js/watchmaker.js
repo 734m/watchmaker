@@ -143,7 +143,7 @@ var Watchmaker = function() {
 
     if(mouseTilePosition) {
       var mp = tileToScreen(mouseTilePosition);
-      ctx.fillStyle = "rgb(210,210,210)";
+      ctx.fillStyle = "rgb(205,197,193)";
       ctx.fillRect(mp.x, mp.y, TILE.width, TILE.height);
     }
   

@@ -35,7 +35,10 @@ var MAP_KEY = {
   'd': "desk",
   'A': "americanflag",
   "^": "deadtree",
-  "&": "livetree"
+  "h": "hachiko",
+  "&": "livetree",
+  "1": "banner",
+  "*": "start"
 }
 
 var MAP_DATA = [
@@ -67,11 +70,30 @@ var MAP_DATA = [
 "                                    "]
 
 MAP_DATA = [
-"         ^ ",
-"           ",
-"     ^     ",
-" ^         ",
-"           "]
+"               ^ ",
+"     $           ",
+"                 ",
+"       $   ^     ",
+"                 ",
+"   ^           h ",
+"                 ",
+"           ^     ",
+" ^    A          ",
+"                 ",
+"            ^&&  ",
+"                 ",
+"   ^             ",
+"                 ",
+"                 ",
+"                 ",
+"       1    ^    ",
+"       d         ",
+" ^               ",
+"        *        ",
+"           ^     ",
+"                 ",
+" ^         pppp  ",
+"                 "]
 
 
                                           
