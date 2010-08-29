@@ -165,7 +165,7 @@ var Watchmaker = function() {
       spriteArray.push({x: screenPos.x, y: screenPos.y, sprite: otherPlayer.sprite});
     }
 
-    spriteArray.sort(function(a,b) { return a.y - b.y});
+    spriteArray.sort(function(a,b) { return (a.y - b.y) || ((a.sprite.image.src === player.sprite.image.src) ? 1 : 0) || ((b.sprite.image.src === player.sprite.image.src) ? -1 : 0) || (a.x - b.x) });
     $.each(spriteArray, function() {
       this.sprite.draw(this.x, this.y)
     });
