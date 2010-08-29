@@ -94,7 +94,7 @@ var Watchmaker = function() {
       onServerInit(cmd);
     }
     player.playerId = player.playerId || socket.transport.sessionid;
-    console.log('server says: ' + cmd);
+    console.log('server says: ' + JSON.stringify(cmd));
     if(commands[cmd.name]) {
       commands[cmd.name](cmd);
     }
