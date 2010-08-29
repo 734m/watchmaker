@@ -19,7 +19,6 @@ var Sprite = function() {
       if(!s.frameWidth) {
         s.frameWidth = s.image.width;
       }
-      console.log("width", (s.frameWidth - tileDimensions.width) / 2);
       s.positionOffset = {y: 35, x: (s.frameWidth - tileDimensions.width) / 2};
     }
     this.image.src = source;

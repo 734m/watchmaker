@@ -28,15 +28,14 @@ var Watchmaker = function() {
       if (cmd.playerId == player.playerId) {
         player.setPosition(cmd.x, cmd.y);
       } else {
-        otherPlayers[cmd.playerId] = new Player(ctx);
-        otherPlayers[cmd.playerId].playerId = cmd.playerId;
-        otherPlayers[cmd.playerId].setPosition(cmd.x, cmd.y);
+        var playerId = cmd.playerId;
+        otherPlayers[playerId] = new Player(ctx);
+        otherPlayers[playerId].playerId = playerId;
+        otherPlayers[playerId].setPosition(cmd.x, cmd.y);
       }
-      repaint();
     },
 
     move: function(cmd) {
-      console.dir(cmd);
       if (cmd.playerId == player.playerId) {
         player.walk(cmd.direction, new Vector2D(cmd.x2, cmd.y2));
       } else {
@@ -51,7 +50,6 @@ var Watchmaker = function() {
     set_map: function(cmd) {
       for (var x in cmd.data) {
         for (var y in cmd.data[x]) {
-          //console.log([x, y, cmd.data[x][y]])
           Map.set(x, y, cmd.data[x][y]);
         }
       }
@@ -61,6 +59,7 @@ var Watchmaker = function() {
     set_players: function(cmd) {
       for (var playerId in cmd.data) {
         if (playerId != player.playerId) {
+          //debugger;
           otherPlayers[playerId] = new Player(ctx);
           otherPlayers[playerId].playerId = playerId;
           otherPlayers[playerId].setPosition(cmd.data[playerId].x, cmd.data[playerId].y);
@@ -69,7 +68,6 @@ var Watchmaker = function() {
     },
 
     delete_player: function(cmd) {
-      console.dir(cmd);
       if (otherPlayers.hasOwnProperty(cmd.playerId)) {
         delete otherPlayers[cmd.playerId];
       }
@@ -171,16 +169,18 @@ var Watchmaker = function() {
       }
     }
     spriteArray.push({"x": playerScreenPosition.x, "y": playerScreenPosition.y, "sprite": player.sprite})
-    spriteArray.sort(function(a,b) { return a.y - b.y});
     // console.log($.map(spriteArray, function(s) {
     //   return [s.y, s.sprite.image.src]
     // }));
     // console.log(spriteArray.length);
 
-    for (var id in otherPlayers) {
-      var p = otherPlayers[id];
-      spriteArray.push({x: p.position.x, y: p.position.y, sprite: p.sprite});
+    for (var playerId in otherPlayers) {
+      var otherPlayer = otherPlayers[playerId];
+      var screenPos = tileToScreen(otherPlayer.position);
+      spriteArray.push({x: screenPos.x, y: screenPos.y, sprite: otherPlayer.sprite});
     }
+
+    spriteArray.sort(function(a,b) { return a.y - b.y});
 
     $.each(spriteArray, function() {
       this.sprite.draw(this.x, this.y)

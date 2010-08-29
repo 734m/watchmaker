@@ -36,6 +36,7 @@ var MAP_KEY = {
   '#': "brick",
   "^": "deadtree"
 }
+
 var MAP_DATA = [
 "                                    ",
 "                ^                   ",
@@ -56,6 +57,14 @@ var MAP_DATA = [
 "                                    ",
 "                                    ",
 "                                    "]
+
+MAP_DATA = [
+"         ^ ",
+"           ",
+"     ^     ",
+" ^         ",
+"           "]
+
 
                                           
 exports.map = createMap(MAP_DATA, MAP_KEY);
