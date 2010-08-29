@@ -7,6 +7,7 @@ var Watchmaker = function() {
     height: 45
   }
 
+  // var mouseShadowSprite;
   var tileSprites = {};
 
   var mouseTilePosition;
@@ -119,7 +120,6 @@ var Watchmaker = function() {
   function drawTile(x, y, image) {
     var screenPos = tileToScreen(tilePos);
       ctx.drawImage(image, screenPos.x, screenPos.y);
-    
   }
   
   function repaint(dt) {
@@ -129,8 +129,18 @@ var Watchmaker = function() {
 
     if(mouseTilePosition) {
       var mp = tileToScreen(mouseTilePosition);
-      ctx.fillStyle = "rgb(205,197,193)";
-      ctx.fillRect(mp.x, mp.y, TILE.width, TILE.height);
+      // mouseShadowSprite.positionOffset = {y: 45, x: 15};
+      // mouseShadowSprite.draw(mp.x, mp.y);
+      // ctx.strokeStyle = "rgb(205,197,193)";
+      ctx.strokeStyle = "rgba(0,0,0,0.1)"
+      ctx.lineWidth = 5;
+      ctx.strokeRect(mp.x, mp.y, TILE.width, TILE.height);
+    }
+    
+    if(player.destination) {
+      var p = tileToScreen(player.destination); 
+      ctx.fillStyle = "rgba(0,0,0,0.05)"
+      ctx.fillRect(p.x, p.y, TILE.width, TILE.height);
     }
   
     // this is super inefficient
@@ -165,7 +175,7 @@ var Watchmaker = function() {
       spriteArray.push({x: screenPos.x, y: screenPos.y, sprite: otherPlayer.sprite});
     }
 
-    spriteArray.sort(function(a,b) { return a.y - b.y});
+    spriteArray.sort(function(a,b) { return (a.y - b.y) || ((a.sprite.image.src === player.sprite.image.src) ? 1 : 0) || ((b.sprite.image.src === player.sprite.image.src) ? -1 : 0) || (a.x - b.x) });
     $.each(spriteArray, function() {
       this.sprite.draw(this.x, this.y)
     });
@@ -177,6 +187,9 @@ var Watchmaker = function() {
       canvas = $("canvas");
       ctx = canvas.get(0).getContext("2d");
 
+      // Misc sprites
+      // mouseShadowSprite = new Sprite("images/mouseShadow.png", ctx, null, null, TILE)
+
       // Set up socket
       io.setPath('/js/');
       var parts = window.location.host.split(":");
@@ -185,6 +198,9 @@ var Watchmaker = function() {
       socket.on('message', dispatch);
 
       player = new Player(ctx, TILE);
+      Watchmaker.player = player;
+
+      // Dimensions
       var body = $("body");
       var w = $(window).width();
       var h = $(window).height();
