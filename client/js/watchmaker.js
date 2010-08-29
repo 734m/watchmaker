@@ -12,7 +12,7 @@ var Watchmaker = function() {
       playerScreenPosition = new Vector2D();
   
   // Drawing
-  var FRAME_RATE = 30;
+  var FRAME_RATE = 20;
   var FRAME_INTERVAL = 1000 / FRAME_RATE;
   var canvas, ctx;
 
@@ -67,7 +67,11 @@ var Watchmaker = function() {
       "walk_down": [5,6],
       "walk_up": [7,8]
     });
-    new Sprite("images/deadtree.png", ctx, null, null, TILE);
+    // new Sprite("images/deadtree.png", ctx, null, null, TILE);
+    // new Sprite("images/streetlamp.png", ctx, null, null, TILE);
+    // new Sprite("images/americanflag.png", ctx, null, null, TILE);
+    // new Sprite("images/desk.png", ctx, null, null, TILE);
+    // new Sprite("images/portopotty.png", ctx, null, null, TILE);
   }
   
   
@@ -108,7 +112,7 @@ var Watchmaker = function() {
   
   function repaint(dt) {
     if(dt === undefined) dt = 0;
-    ctx.fillStyle = "rgb(245,245,245)";  
+    ctx.fillStyle = "rgb(220,220,220)";  
     ctx.fillRect (0,0,canvas.width(), canvas.height());  
 
     if(mouseTilePosition) {
@@ -128,37 +132,20 @@ var Watchmaker = function() {
           if(sprite) {
             var tilePos = new Vector2D(x, y);
             var screenPos = tileToScreen(tilePos);
-            if(screenPos.isWithin(-TILE.width - 100, -TILE.height -500, canvas.width() + 200, canvas.height() + 100)) {
+            if(screenPos.isWithin(-TILE.width - 100, -TILE.height -500, canvas.width() + 200, canvas.height() + 500)) {
               spriteArray.push({"x": screenPos.x, "y": screenPos.y, "sprite": sprite})
-            //   if(tilePos.y <= player.tilePosition.y) {
-            //     drawTile(x, y, image);
-            //   }else{
-            //     foreground.push({"pos": tilePos, "image": image})
-            //   }
             }
+          }else{
+            new Sprite(imageFile, ctx, null, null, TILE);
           }
-          //
         }
       }
     }
     spriteArray.push({"x": playerScreenPosition.x, "y": playerScreenPosition.y, "sprite": player.sprite})
     spriteArray.sort(function(a,b) { return a.y - b.y});
-    // console.log($.map(spriteArray, function(s) {
-    //   return [s.y, s.sprite.image.src]
-    // }));
-    // console.log(spriteArray.length);
     $.each(spriteArray, function() {
-      // console.log([this.sprite.image.src, this.x, this.y])
-      // if(this.sprite != player.sprite) {
-      //   // debugger;
-      // }
       this.sprite.draw(this.x, this.y)
     })
-    // debugger;
-
-    // for(var i in  {
-    //   player.draw(playerScreenPosition, dt);
-    // }
   }
 
   return {
