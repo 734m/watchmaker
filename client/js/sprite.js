@@ -79,6 +79,20 @@ var Player = function(ctx, tileSize, position) {
     "walk_down": [5,6],
     "walk_up": [7,8]
   }, this.afterDraw);
+  this.sprite = new Sprite("images/giftersuit.png", ctx, 80, 9, tileSize, {
+    "walk_left": [1,2],
+    "walk_right": [3,4],
+    "default": [0],
+    "walk_down": [5,6],
+    "walk_up": [7,8]
+  }, this.afterDraw);
+  this.sprite = new Sprite("images/littleguy.png", ctx, 80, 9, tileSize, {
+    "walk_left": [2,3],
+    "walk_right": [4,5],
+    "default": [0,1],
+    "walk_down": [6,7],
+    "walk_up": [8,9]
+  }, this.afterDraw);
   this.chatBubbleSprite = new Sprite("images/talkbubble.png", ctx, 42*5, 3, tileSize, {
     "default": [0,1,2]
   })
@@ -264,16 +278,16 @@ $.extend(Player.prototype, {
   stop: function() {
     this.directionName = "stop"
     this.setPosition(this.tilePosition.x, this.tilePosition.y);
-    this.sprite.setAnimation("default", 1000);
+    this.sprite.setAnimation("default", 500);
     this.stopRequested = true;
     this.direction = DIRECTIONS.none;
   },
   
   drawChatBubble: function(x, y) {
     if(this.message != null) {
-      this.chatBubbleSprite.draw(x + 80, y - 80);
+      this.chatBubbleSprite.draw(x + 80, y - this.sprite.image.height );
     }
-    this.chatBubbleText.css({top: y - 120, left: x + 35}).text(this.message).show();
+    this.chatBubbleText.css({top: y - this.sprite.image.height - 42, left: x + 35}).text(this.message).show();
   },
   
   removeChatBubble: function(player) {
