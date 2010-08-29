@@ -144,7 +144,7 @@ var Watchmaker = function() {
     spriteArray.push({"x": playerScreenPosition.x, "y": playerScreenPosition.y, "sprite": player.sprite})
     // console.log(spriteArray.length);
     $.each(spriteArray.sort(function(a,b) { b.y - a.y}), function() {
-      console.log([this.sprite.image.src, this.x, this.y])
+      // console.log([this.sprite.image.src, this.x, this.y])
       // if(this.sprite != player.sprite) {
       //   // debugger;
       // }
