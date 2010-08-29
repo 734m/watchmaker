@@ -1,6 +1,8 @@
+var Sounds = Sounds || {};
 
 // Dimensions
 var Watchmaker = function() {
+
 
   var TILE = {
     width: 80,
@@ -290,6 +292,22 @@ var Watchmaker = function() {
     init: function() {
       canvas = $("canvas");
       ctx = canvas.get(0).getContext("2d");
+
+      // soundmanager
+      soundManager.url = 'soundmanager/swf/';
+      soundManager.onready(function() {
+        // check if SM2 successfully loaded..
+        if (soundManager.supported()) {
+          // SM2 has loaded - now you can create and play sounds!
+          var sound = Sounds['talk'] = soundManager.createSound({
+            id: 'talk',
+            url: 'sounds/talk.mp3'
+          });
+          //sound.play();
+        } else {
+          // (Optional) Hrmm, SM2 could not start. Show an error, etc.?
+        }
+      });
 
       // Misc sprites
       // mouseShadowSprite = new Sprite("images/mouseShadow.png", ctx, null, null, TILE)

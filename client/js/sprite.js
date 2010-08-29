@@ -71,6 +71,8 @@ var Sprite = function() {
   return SpriteClass;
 }();
 
+var Sounds = Sounds || {};
+
 var Player = function(ctx, tileSize, appearanceName, position) {
   this.sprite = Player.getAppearanceSprite(appearanceName, ctx, tileSize);
   this.chatBubbleSprite = new Sprite("images/talkbubble.png", ctx, 42*7, 3, tileSize, {
@@ -316,6 +318,9 @@ $.extend(Player.prototype, {
       p.drawChatBubble(x, y)
     }
     this.chatBubbleTimeoutID = setTimeout(this.removeChatBubble, Player.CHAT_BUBBLE_TIMEOUT, this);
+    if (Sounds.hasOwnProperty('talk')) {
+      Sounds['talk'].play();
+    }
   }
 });
 
