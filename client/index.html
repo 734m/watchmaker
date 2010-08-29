@@ -49,30 +49,46 @@
     }
     
     .chatBubbleText {
-      width: 180px;
+      width: 175px;
       height: 40px;
       position: absolute;
       display: none;
-      font: 11px "Helvetica Neue", Helvetica, sans-serif;
+      font: 10px "Helvetica Neue", Helvetica, sans-serif;
     	overflow: hidden;
-    	text-overflow: ellipsis-word;
+      text-overflow: ellipsis-word;
+/*      overflow-y: scroll;*/
+    }
+    
+    .meta .forms {
+      margin: 5px 0 0 5px;
     }
     
     form {
-      margin: 5px 0 0 5px;
+      display: inline;
     }
     
     form input {
       border: 2px solid white;
       background-color: #333;
       color: white;
-      font-size: 14px;
+      font-size: 13px;
     }
     
     form input.text {
       background-color: #555;
       padding: 3px;
-      width: 500px;
+    }
+    
+    form input.search {
+      width: 150px;      
+    }
+    
+    form input.talk {
+      width: 300px;      
+    }
+    
+    form input#talk {
+      margin-right: 12px;
     }
     
     form input.submit {
@@ -98,11 +114,16 @@
     <canvas></canvas>
   </div>
   <div class="meta">
-    <form>
-      <input type="text" class='text' name="q"/>
-      <input type="submit" class='submit' id="talk" value='Talk' />
-      <input type="submit" class='submit' id="search" value='Search' />
-    </form>
+    <div class="forms">
+      <form class="talk">
+        <input type="text" class='text talk' name="q" value="i'm going to vote for 734m for node knockout!"/>
+        <input type="submit" class='submit' id="talk" value='Talk' />
+      </form>
+      <form class="search">
+        <input type="text" class='text search' name="q" value="gaga"/>
+        <input type="submit" class='submit' id="search" value='Search' />
+      </form>
+    </div>
     <img class="title" src="images/title.png" alt="Brent Fitzgerald + Huned Botee. 8/29/2010."/>
     <a href="http://nodeknockout.com/teams/734m"><img class="nko" src="images/voteko.png"/></a>
   </div>
@@ -117,29 +138,39 @@
     $(document).ready(function() {
       Watchmaker.init()
       var formText = "i'm going to vote for 734m for node knockout!";
-      $("input:text").attr({
+      $("input.talk").attr({
         value: formText
       })
-      $(window).click(function() {
-        $("input:text").select();
+      var lastFocused = $("input.talk");
+      $("canvas").click(function() {
+        lastFocused.select();
       })
-      $("input:text").select();
+      $("input.talk")
+        .select()
+      $("input:text")
+        .focus(function() {
+          console.log(["lastFocused", this])
+          lastFocused = $(this);
+        });
       $("form").submit(function() {
+        var input = lastFocused;
+        console.log([input[0], $("input.search")[0]]);
+        if(input[0] == $("input.search")[0]) {
+          console.log('searching');
+          Watchmaker.search(input.val());
+        }else{
+          Watchmaker.talk(input.val());
+        }
+        input.val("")
         return false;
       });
 
       $("input#talk").click(function(){
-        var input = $("input:text");
-        Watchmaker.talk(input.val());
-        input.val("")
-        return false;
-      });
-
+        $("input.talk").focus();
+      })
+      
       $("input#search").click(function(){
-        var input = $("input:text");
-        Watchmaker.search(input.val());
-        input.val("")
-        return false;
+        $("input.search").focus();
       });
     });
   </script>
