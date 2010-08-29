@@ -1,16 +1,12 @@
-// Viewport
 
-
-//
-// new Sprite({x; })
-
+// Dimensions
 var Watchmaker = function() {
 
-  // Dimensions
   var TILE = {
     width: 80,
     height: 45 
   }
+
   var mouseTilePosition;
       mouseScreenPosition = new Vector2D(),
       playerScreenPosition = new Vector2D();
@@ -26,14 +22,6 @@ var Watchmaker = function() {
   // Socket
   var socket;
   
-  var IMAGES = ["images/gifter.png", 
-                "images/blank.png",
-                "images/grass.png",
-                "images/water.png",
-                "images/crater.png",
-                "images/deadtree.png",
-                "images/tile_blank.png"];
-
   var commands = {
     init: function(cmd) {
       player.setPosition(cmd.x, cmd.y)
@@ -71,6 +59,18 @@ var Watchmaker = function() {
     }
   }
   
+  function setupSprites(ctx) {
+    new Sprite("images/gifter.png", ctx, 80, 9, TILE, {
+      "walk_left": [0,1],
+      "walk_right": [2,3],
+      "default": [4],
+      "walk_down": [5,6],
+      "walk_up": [7,8]
+    });
+    new Sprite("images/deadtree.png", ctx, null, null, TILE);
+  }
+  
+  
   function tileIsOnScreen(tilePosition) {
     var screenPosition = tileToScreen(tilePosition);
     return pointIsOnScreen(screenPosition);
@@ -100,6 +100,12 @@ var Watchmaker = function() {
     repaint(dt);
   }
   
+  function drawTile(x, y, image) {
+    var screenPos = tileToScreen(tilePos);
+      ctx.drawImage(image, screenPos.x, screenPos.y);
+    
+  }
+  
   function repaint(dt) {
     if(dt === undefined) dt = 0;
     ctx.fillStyle = "rgb(245,245,245)";  
@@ -112,19 +118,25 @@ var Watchmaker = function() {
     }
   
     // this is super inefficient
+    var foreground = [];
     for(var x in Map.tiles) {
       for(var y in Map.tiles[x]) {
-        var tilePos = new Vector2D(x, y);
-        var screenPos = tileToScreen(tilePos);
-        if(screenPos.isWithin(-TILE.width, -TILE.height, canvas.width(), canvas.height())) {
-          var tileType = Map.tiles[x][y];
-          if(tileType) {
-            var imageFile = "images/" + tileType + ".png"
-            var image = Images.loaded[imageFile];
-            if(image) 
-              ctx.drawImage(image, screenPos.x, screenPos.y);
-          }
-        }
+        // var tileType = Map.tiles[x][y];
+        // if(tileType) {
+        //   var imageFile = "images/" + tileType + ".png"
+        //   var image = Images.loaded[imageFile];
+        //   if(image) {
+        //     if(screenPos.isWithin(-TILE.width - 100, -TILE.height -500, canvas.width() + 200, canvas.height() + 100)) {
+        //       var tilePos = new Vector2D(x, y);
+        //       if(tilePos.y <= player.tilePosition.y) {
+        //         drawTile(x, y, image);
+        //       }else{
+        //         foreground.push({"pos": tilePos, "image": image})
+        //       }
+        //     }
+        //   }
+        //   //
+        // }
       }
     }
     player.draw(playerScreenPosition, dt);
@@ -133,12 +145,10 @@ var Watchmaker = function() {
   return {
     
     init: function() {
-      Images.load(IMAGES, Watchmaker.main)
       canvas = $("canvas");
       ctx = canvas.get(0).getContext("2d");
-    },
-  
-    main: function() {
+      setupSprites(ctx);
+
       player = new Player(ctx);
       var body = $("body");
       var w = $(window).width();

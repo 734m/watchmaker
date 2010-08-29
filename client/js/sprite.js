@@ -11,25 +11,38 @@ var DIRECTIONS = {
 
 var Sprite = function() {
   
-  var SpriteClass = function(source, ctx, frameWidth, numFrames, positionOffset, animations) {
-    // Load the image
-  	this.image = Images.loaded[source];
+  var SpriteClass = function(source, ctx, frameWidth, numFrames, tileDimensions, animations) {
+    var s = this;
+  	this.image = new Image();
+  	this.image.onload = function() {
+  	  s.loaded = true;
+      if(!s.frameWidth) {
+        s.frameWidth = s.image.width;
+      }
+      console.log("width", (s.frameWidth - tileDimensions.width) / 2);
+      s.positionOffset = {y: 35, x: (s.frameWidth - tileDimensions.width) / 2};
+  	}
+  	this.image.src = source;
     this.ctx = ctx;
     this.frameWidth = frameWidth;
-    this.numFrames = numFrames;
-    this.positionOffset = positionOffset;
-    this.animations = animations;
+    this.numFrames = numFrames || 1;
+    this.animations = animations || {"default": [0]};
     this.frames = [];
+    SpriteClass.SPRITES[source] = this;
   }
+  SpriteClass.SPRITES = {};
   
   $.extend(SpriteClass.prototype, {
     setAnimation: function(name, interval) {
-      this.frames = this.animations[name];
+      this.frames = this.animations[name] || [0];
       this.interval = interval
       this.elapsed = 0;
     },
     
     draw: function(x, y, dt) {
+      if(!this.loaded) {
+        return;
+      }
       this.elapsed += dt;
       var frameIndex = Math.floor(this.elapsed / this.interval) % this.frames.length;
       var frame = this.frames[frameIndex];
@@ -48,24 +61,19 @@ var Sprite = function() {
 }();
 
 var Player = function(ctx, position) {
-  this.sprite = new Sprite("images/gifter.png", ctx, 80, 9, {y: 35, x: 0}, {
-    "walk_left": [0,1],
-    "walk_right": [2,3],
-    "stand_still": [4],
-    "walk_down": [5,6],
-    "walk_up": [7,8]
-  })
+  this.sprite = Sprite.SPRITES["images/gifter.png"];
   this.setPosition(0,0);
   this.destination = this.position;
   this.direction = DIRECTIONS.none;
   this.stop();
 }
-Player.SPEED = 1;
+Player.HSPEED = 1;
+Player.VSPEED = 1.3;
 $.extend(Player.prototype, {
   tick: function(dt) {
     if(this.directionName != "stop") {
       var change = this.direction.multiplyBy(0.001 * dt);
-      var newPosition = this.position.plus(change);
+      var newPosition = this.position.plus(new Vector2D(change.x * Player.HSPEED, change.y * Player.VSPEED));
 
       // cases:
       //
@@ -235,7 +243,7 @@ $.extend(Player.prototype, {
   stop: function() {
     this.directionName = "stop"
     this.setPosition(this.tilePosition.x, this.tilePosition.y);
-    this.sprite.setAnimation("stand_still", 1000);
+    this.sprite.setAnimation("default", 1000);
     this.stopRequested = true;
     this.direction = DIRECTIONS.none;
   }

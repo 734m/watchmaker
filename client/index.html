@@ -9,6 +9,9 @@
       width: 100%;
       height: 100%;
     }
+    body, canvas {
+      cursor: pointer;
+    }
     .meta {
       position: absolute;
 /*      height: 30px;*/
@@ -16,18 +19,30 @@
       right: 0;
       z-index: 10;
       width: 100%;
-      background-color: #ccc;
+      background: #000;
+      height: 40px;
     }
     
-    .meta img {
-      height: 50px;;
+    .meta img.title {
+      display: block;
+      position: absolute;
+      top: 3px;
+      right: 80px;
+    }
+
+    .meta img.nko {
+      display: block;
+      position: absolute;
+      height: 40px;
+      right: 0;
     }
   </style>
 </head>
 <body>
   <canvas></canvas>
   <div class="meta">
-    <a href="http://nodeknockout.com/teams/734m"><img src="images/voteko.png"/></a>
+    <img class="title" src="images/title.png"/>
+    <a href="http://nodeknockout.com/teams/734m"><img class="nko" src="images/voteko.png"/></a>
   </div>
   <script src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
   <script src="js/socket.io.js"></script>
