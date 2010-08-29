@@ -121,7 +121,7 @@ var Watchmaker = function() {
       body.css('height', $(window).height() - 10)
       canvas.attr('width', $(body).width());
       canvas.attr('height', $(body).height() - 30);
-      playerScreenPosition = new Vector2D(canvas.width() - TILE.width, canvas.height() - TILE.height).divideBy(2).floor();
+      playerScreenPosition = new Vector2D(canvas.width() - TILE.width, canvas.height() - TILE.height + 100).divideBy(2).floor();
       repaint()
     }).resize()
     

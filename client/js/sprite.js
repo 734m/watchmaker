@@ -73,7 +73,7 @@ var Sprite = function() {
 
 var Player = function(ctx, tileSize, appearanceName, position) {
   this.sprite = Player.getAppearanceSprite(appearanceName, ctx, tileSize);
-  this.chatBubbleSprite = new Sprite("images/talkbubble.png", ctx, 42*5, 3, tileSize, {
+  this.chatBubbleSprite = new Sprite("images/talkbubble.png", ctx, 42*7, 3, tileSize, {
     "default": [0,1,2]
   })
   this.chatBubbleSprite.setAnimation("default", 100);
@@ -298,9 +298,9 @@ $.extend(Player.prototype, {
   
   drawChatBubble: function(x, y) {
     if(this.message != null) {
-      this.chatBubbleSprite.draw(x + 80, y - this.sprite.image.height );
+      this.chatBubbleSprite.draw(x + 100, y - this.sprite.image.height - 10);
     }
-    this.chatBubbleText.css({top: y - this.sprite.image.height - 42, left: x + 35}).text(this.message).show();
+    this.chatBubbleText.css({top: y - this.sprite.image.height - 83, left: x + 20}).text(this.message).show();
   },
   
   removeChatBubble: function(player) {
