@@ -13,16 +13,16 @@ var Sprite = function() {
   
   var SpriteClass = function(source, ctx, frameWidth, numFrames, tileDimensions, animations) {
     var s = this;
-  	this.image = new Image();
-  	this.image.onload = function() {
-  	  s.loaded = true;
+    this.image = new Image();
+    this.image.onload = function() {
+      s.loaded = true;
       if(!s.frameWidth) {
         s.frameWidth = s.image.width;
       }
       console.log("width", (s.frameWidth - tileDimensions.width) / 2);
       s.positionOffset = {y: 35, x: (s.frameWidth - tileDimensions.width) / 2};
-  	}
-  	this.image.src = source;
+    }
+    this.image.src = source;
     this.ctx = ctx;
     this.frameWidth = frameWidth;
     this.numFrames = numFrames || 1;
@@ -120,7 +120,7 @@ $.extend(Player.prototype, {
           } else if (this.position.y < this.destination.y) {
             direction = "down";
           } else {
-            direction = "stop"
+            direction = "stop";
           }
 
           this.walk(direction, this.destination);
@@ -149,7 +149,7 @@ $.extend(Player.prototype, {
           } else if (this.position.y < this.destination.y) {
             direction = "down";
           } else {
-            direction = "stop"
+            direction = "stop";
           }
 
           this.walk(direction, this.destination);
@@ -178,7 +178,7 @@ $.extend(Player.prototype, {
           } else if (this.position.x < this.destination.x) {
             direction = "right";
           } else {
-            direction = "stop"
+            direction = "stop";
           }
 
           this.walk(direction, this.destination);
@@ -207,7 +207,7 @@ $.extend(Player.prototype, {
           } else if (this.position.x < this.destination.x) {
             direction = "right";
           } else {
-            direction = "stop"
+            direction = "stop";
           }
 
           this.walk(direction, this.destination);

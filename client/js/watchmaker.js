@@ -17,6 +17,7 @@ var Watchmaker = function() {
   var canvas, ctx;
 
   // Sprites
+  var otherPlayers = {};
   var player;
   
   // Socket
@@ -24,12 +25,21 @@ var Watchmaker = function() {
   
   var commands = {
     init: function(cmd) {
-      player.setPosition(cmd.x, cmd.y)
+      if (cmd.playerId == player.playerId) {
+        player.setPosition(cmd.x, cmd.y);
+      } else {
+        otherPlayers[cmd.playerId] = new Player(ctx, cmd.playerId);
+      }
       repaint();
     },
 
     move: function(cmd) {
-      player.walk(cmd.direction, new Vector2D(cmd.x2, cmd.y2));
+      console.dir(cmd);
+      if (cmd.playerId == player.playerId) {
+        player.walk(cmd.direction, new Vector2D(cmd.x2, cmd.y2));
+      } else {
+        otherPlayers[cmd.playerId].walk(cmd.direction, new Vector2D(cmd.x2, cmd.y2));
+      }
     },
 
     interact: function(cmd) {
@@ -47,11 +57,18 @@ var Watchmaker = function() {
     },
 
     set_players: function(cmd) {
-      console.log(cmd);
+      for (var playerId in cmd.data) {
+        if (playerId != player.playerId) {
+          otherPlayers[playerId] = new Player(ctx);
+          otherPlayers[playerId].playerId = playerId;
+          console.log("player " + playerId + ", " + otherPlayers[playerId].position.x + ', ' + otherPlayers[playerId].position.y);
+        }
+      }
     }
   }
 
   function dispatch(cmd) {
+    player.playerId = player.playerId || socket.transport.sessionid;
     console.log('server sezz: ' + cmd);
     cmd = $.parseJSON(cmd);
     if(commands[cmd.name]) {
@@ -97,6 +114,9 @@ var Watchmaker = function() {
   function tick(dt) {
     mouseTilePosition = screenToTile(mouseScreenPosition);
     player.tick(dt);
+    for(p in otherPlayers) {
+      otherPlayers[p].tick(dt);
+    }
     repaint(dt);
   }
   
@@ -143,18 +163,19 @@ var Watchmaker = function() {
     }
     spriteArray.push({"x": playerScreenPosition.x, "y": playerScreenPosition.y, "sprite": player.sprite})
     // console.log(spriteArray.length);
+
+    for (id in otherPlayers) {
+      var p = otherPlayers[id];
+      spriteArray.push({x: p.position.x, y: p.position.y, sprite: p.sprite});
+    }
+
     $.each(spriteArray.sort(function(a,b) { b.y - a.y}), function() {
       // console.log([this.sprite.image.src, this.x, this.y])
       // if(this.sprite != player.sprite) {
       //   // debugger;
       // }
       this.sprite.draw(this.x, this.y)
-    })
-    // debugger;
-
-    // for(var i in  {
-    //   player.draw(playerScreenPosition, dt);
-    // }
+    });
   }
 
   return {
@@ -163,6 +184,13 @@ var Watchmaker = function() {
       canvas = $("canvas");
       ctx = canvas.get(0).getContext("2d");
       setupSprites(ctx);
+
+      // Set up socket
+      io.setPath('/client/');
+      var parts = window.location.host.split(":");
+      socket = new io.Socket(parts[0], parts[1]);
+      socket.connect();
+      socket.on('message', dispatch);
 
       player = new Player(ctx);
       var body = $("body");
@@ -207,12 +235,6 @@ var Watchmaker = function() {
       };
       _tick();
       
-      // Set up socket
-      io.setPath('/client/');
-      var parts = window.location.host.split(":");
-      socket = new io.Socket(parts[0], parts[1]);
-      socket.connect();
-      socket.on('message', dispatch);
     }
   }
 }()
