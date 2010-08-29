@@ -34,7 +34,7 @@ socket.on('connection', function(client) {
   );
 
   // send map and players to client that just connected
-  client.send(JSON.stringify({name: "set_map", data: world.map}));
+  client.send(JSON.stringify({name: "set_map", data: world.map.tiles}));
   client.send(JSON.stringify({name: "set_players", data: world.players}));
 
   // process client messages; broadcast updates to all connected clients

@@ -47,6 +47,7 @@ var Watchmaker = function() {
     set_map: function(cmd) {
       for (var x in cmd.data) {
         for (var y in cmd.data[x]) {
+          console.log([x, y, cmd.data[x][y]])
           Map.set(x, y, cmd.data[x][y]);
         }
       }
@@ -106,10 +107,14 @@ var Watchmaker = function() {
         var tilePos = new Vector2D(x, y);
         var screenPos = tileToScreen(tilePos);
         if(screenPos.isWithin(-TILE_SIZE, -TILE_SIZE, canvas.width(), canvas.height())) {
-          var tileData = Map.tiles[x][y];
-          var imageFile = "images/" + tileData["type"] + ".png"
-          var image = Images.loaded[imageFile];
-          ctx.drawImage(image, screenPos.x, screenPos.y);
+          var tileType = Map.tiles[x][y];
+          if(tileType) {
+            var imageFile = "images/" + tileType + ".png"
+            var image = Images.loaded[imageFile];
+            console.log(imageFile);
+            if(image) 
+              ctx.drawImage(image, screenPos.x, screenPos.y);
+          }
         }
       }
     }
