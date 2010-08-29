@@ -53,7 +53,6 @@ var Watchmaker = function() {
           Map.set(x, y, cmd.data[x][y]);
         }
       }
-      repaint();
     },
 
     set_players: function(cmd) {
@@ -139,8 +138,8 @@ var Watchmaker = function() {
   
   function repaint(dt) {
     if(dt === undefined) dt = 0;
-    ctx.fillStyle = "rgba(255,255,255, 0.8)";  
-    ctx.fillRect (0,0,canvas.width(), canvas.height());  
+    // ctx.fillStyle = "rgb(255,255,255)";  
+    ctx.clearRect(0,0,canvas.width(), canvas.height());  
 
     if(mouseTilePosition) {
       var mp = tileToScreen(mouseTilePosition);
