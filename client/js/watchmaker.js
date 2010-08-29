@@ -10,7 +10,8 @@ var Watchmaker = function() {
   // var mouseShadowSprite;
   var tileSprites = {};
 
-  var mouseTilePosition;
+  var mouseTilePosition,
+      mouseDown = false,
       mouseScreenPosition = new Vector2D(),
       playerScreenPosition = new Vector2D();
   
@@ -91,6 +92,16 @@ var Watchmaker = function() {
     }
   }
     
+  function moveRequest(target) {
+    socket.send(JSON.stringify({ 
+      name: "move_req", 
+      x1: player.tilePosition.x, 
+      y1: player.tilePosition.y, 
+      x2: target.x, 
+      y2: target.y }))
+    
+  }
+    
   function tileIsOnScreen(tilePosition) {
     var screenPosition = tileToScreen(tilePosition);
     return pointIsOnScreen(screenPosition);
@@ -115,7 +126,13 @@ var Watchmaker = function() {
   }
   
   function tick(dt) {
+    var old = mouseTilePosition;
     mouseTilePosition = screenToTile(mouseScreenPosition);
+    if(!old || !mouseTilePosition.equals(old)) {
+      if(mouseDown) {
+        moveRequest(mouseTilePosition);
+      }
+    }
     player.tick(dt);
     for(var p in otherPlayers) {
       otherPlayers[p].tick(dt);
@@ -222,15 +239,19 @@ var Watchmaker = function() {
       canvas.mousemove(function(event) {
         mouseScreenPosition = new Vector2D(event.clientX,event.clientY);
       })
+      canvas.mousedown(function(event) {
+        mouseDown = true;
+        var screenPosition = new Vector2D(event.clientX,event.clientY);
+        var p = screenToTile(screenPosition);
+        moveRequest(p);
+      })
+      $(window).mouseup(function(event) {
+        mouseDown = false;
+      })
       canvas.click(function(event) {
         var screenPosition = new Vector2D(event.clientX,event.clientY);
         var p = screenToTile(screenPosition);
-        socket.send(JSON.stringify({ 
-          name: "move_req", 
-          x1: player.tilePosition.x, 
-          y1: player.tilePosition.y, 
-          x2: p.x, 
-          y2: p.y }))
+        moveRequest(p);
       })
       
       // Draw loop

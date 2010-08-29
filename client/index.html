@@ -14,6 +14,13 @@
     body, canvas {
       cursor: pointer;
     }
+    
+    body {
+      -moz-user-select: none;
+      -khtml-user-select: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
     .meta {
       position: absolute;
 /*      height: 30px;*/
@@ -74,7 +81,9 @@
   </style>
 </head>
 <body>
-  <canvas></canvas>
+  <div class="page">
+    <canvas></canvas>
+  </div>
   <div class="meta">
     <form>
       <input type="text" class='text' name="q"/>
@@ -99,9 +108,9 @@
         value: formText
       })
       $(window).click(function() {
-        $("input:text").focus();
+        $("input:text").select();
       })
-      $("input:text").focus();
+      $("input:text").select();
       $("form").submit(function() {
         var input = $("input:text");
         Watchmaker.talk(input.val());
