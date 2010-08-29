@@ -80,6 +80,12 @@ var Watchmaker = function() {
       if (otherPlayers.hasOwnProperty(cmd.playerId)) {
         otherPlayers[cmd.playerId].talk(cmd.message);
       }
+    },
+
+    search: function(cmd) {
+      if (otherPlayers.hasOwnProperty(cmd.playerId)) {
+        otherPlayers[cmd.playerId].search(cmd.message);
+      }
     }
   }
 
@@ -272,6 +278,13 @@ var Watchmaker = function() {
       player.talk(message);
       socket.send(JSON.stringify({ 
         "name": "talk",
+        "message": message,
+        "playerId": player.playerId }))
+    },
+    search: function(message) {
+      player.talk("searching " +message);
+      socket.send(JSON.stringify({
+        "name": "search",
         "message": message,
         "playerId": player.playerId }))
     }

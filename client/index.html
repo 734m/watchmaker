@@ -126,7 +126,7 @@
       $("input:text").select();
       $("form").submit(function() {
         var input = $("input:text");
-        Watchmaker.talk(input.val());
+        Watchmaker.search(input.val());
         input.val("")
         return false;
       })

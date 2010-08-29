@@ -23,6 +23,14 @@ app.listen(parseInt(process.env['PORT']) || 8080);
 var world = require('./server/world');
 var socket = io.listen(app);
 
+function broadcastData(data) {
+  console.log("starting callback");
+
+  if (typeof data !== 'undefined') {
+    socket.broadcast(JSON.stringify(data));
+  }
+}
+
 socket.on('connection', function(client) {
   var playerId = client.sessionId;
 
@@ -40,11 +48,7 @@ socket.on('connection', function(client) {
   // process client messages; broadcast updates to all connected clients
   client.on('message', function(message) {
     try {
-      socket.broadcast(
-        JSON.stringify(
-          world.process(playerId, JSON.parse(message))
-        )
-      );
+      world.process(playerId, JSON.parse(message), broadcastData)
     } catch(e) {
       console.log('ERROR!!');
       console.dir(e);
