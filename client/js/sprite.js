@@ -86,12 +86,12 @@ var Player = function(ctx, tileSize, appearanceName, position) {
 Player.HSPEED = 2;
 Player.VSPEED = 3;
 Player.CHAT_BUBBLE_TIMEOUT = 10000;
-Player.APPEARANCES = ["gifter", "littleguy", "giftersuit"];
+Player.APPEARANCES = ["gifter", "littleguy", "giftersuit", "beast"];
 Player.getAppearanceSprite = function(name, ctx, tileSize) {
-  console.log(["appearance: ", name])
-  if(Player.APPEARANCES.indexOf(name) < 0) {
-    name = Player.APPEARANCES[0]
-  }
+  // console.log(["appearance: ", name])
+  // if(Player.APPEARANCES.indexOf(name) < 0) {
+  //   name = Player.APPEARANCES[0]
+  // }
   if(name == "giftersuit") {
     return new Sprite("images/giftersuit.png", ctx, 80, 9, tileSize, {
       "walk_left": [1,2],
@@ -99,7 +99,7 @@ Player.getAppearanceSprite = function(name, ctx, tileSize) {
       "default": [0],
       "walk_down": [5,6],
       "walk_up": [7,8]
-    }, this.afterDraw);
+    });
   }else if(name == "littleguy") {
     return new Sprite("images/littleguy.png", ctx, 80, 9, tileSize, {
       "walk_left": [2,3],
@@ -107,7 +107,15 @@ Player.getAppearanceSprite = function(name, ctx, tileSize) {
       "default": [0,1],
       "walk_down": [6,7],
       "walk_up": [8,9]
-    }, this.afterDraw);
+    });
+  }else if(name == "beast") {
+    return new Sprite("images/beast.png", ctx, 80, 9, tileSize, {
+      "default": [0,1,2,3],
+      "walk_left": [4,5],
+      "walk_right": [6,7],
+      "walk_down": [8,9],
+      "walk_up": [10,11]
+    });
   }else{
     return new Sprite("images/gifter.png", ctx, 80, 9, tileSize, {
       "walk_left": [0,1],
@@ -115,7 +123,7 @@ Player.getAppearanceSprite = function(name, ctx, tileSize) {
       "default": [4],
       "walk_down": [5,6],
       "walk_up": [7,8]
-    }, this.afterDraw);
+    });
   }
 }
 
