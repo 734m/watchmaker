@@ -30,22 +30,22 @@ function createMap(data, key){
 };
 
 var MAP_KEY = {
-  '~': "water",
+  '~': "deadtree",
   '.': "grass",
   'D': "road",
   '#': "brick",
-  "^": "rock"
+  "^": "deadtree"
 }
 var MAP_DATA = [
 "                                    ",
-"                                    ",
+"                ^                   ",
 "     ~                              ",
 "                                    ",
-"                                    ",
+"             ^                      ",
 "                                    ",
 "                             ~      ",
 "                                    ",
-"                                    ",
+"        ^                           ",
 "                                    ",
 "                   ~                ",
 "                                    ",

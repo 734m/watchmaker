@@ -11,12 +11,13 @@ var DIRECTIONS = {
 
 var Sprite = function() {
   
-  var SpriteClass = function(source, ctx, frameWidth, numFrames, animations) {
+  var SpriteClass = function(source, ctx, frameWidth, numFrames, positionOffset, animations) {
     // Load the image
   	this.image = Images.loaded[source];
     this.ctx = ctx;
     this.frameWidth = frameWidth;
     this.numFrames = numFrames;
+    this.positionOffset = positionOffset;
     this.animations = animations;
     this.frames = [];
   }
@@ -33,8 +34,13 @@ var Sprite = function() {
       var frameIndex = Math.floor(this.elapsed / this.interval) % this.frames.length;
       var frame = this.frames[frameIndex];
       this.ctx.drawImage(this.image, 
-        this.frameWidth * frame, 0, this.frameWidth, this.image.height, // source
-        x, y, this.frameWidth, this.image.height) // dest
+        this.frameWidth * frame, 0, 
+        this.frameWidth, 
+        this.image.height, // source
+        x - this.positionOffset.x, 
+        y - (this.image.height - this.positionOffset.y), 
+        this.frameWidth, 
+        this.image.height) // dest
     }
   })
   
@@ -42,7 +48,7 @@ var Sprite = function() {
 }();
 
 var Player = function(ctx, position) {
-  this.sprite = new Sprite("images/gifter.png", ctx, 80, 9, {
+  this.sprite = new Sprite("images/gifter.png", ctx, 80, 9, {y: 35, x: 0}, {
     "walk_left": [0,1],
     "walk_right": [2,3],
     "stand_still": [4],

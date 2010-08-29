@@ -7,8 +7,11 @@
 var Watchmaker = function() {
 
   // Dimensions
-  var TILE_SIZE = 80;
-  var mouseTilePosition = new Vector2D(),
+  var TILE = {
+    width: 80,
+    height: 45 
+  }
+  var mouseTilePosition;
       mouseScreenPosition = new Vector2D(),
       playerScreenPosition = new Vector2D();
   
@@ -28,6 +31,7 @@ var Watchmaker = function() {
                 "images/grass.png",
                 "images/water.png",
                 "images/crater.png",
+                "images/deadtree.png",
                 "images/tile_blank.png"];
 
   var commands = {
@@ -76,14 +80,17 @@ var Watchmaker = function() {
   // wraps
   function tileToScreen(tilePosition) {
     var tilePositionOffset = tilePosition.subtract(player.tilePosition);
-    return playerScreenPosition.plus(tilePositionOffset.multiplyBy(TILE_SIZE)).subtract(player.tileOffset.multiplyBy(TILE_SIZE));
+    var screenPositionOffset = new Vector2D(tilePositionOffset.x * TILE.width, tilePositionOffset.y * TILE.height);
+    var playerScreenOffset = new Vector2D(player.tileOffset.x * TILE.width, player.tileOffset.y * TILE.height);
+    return playerScreenPosition.plus(screenPositionOffset).subtract(playerScreenOffset);
   }
 
   // convert a screen coordinate to our global tile system. 
   // wraps
   function screenToTile(screenPosition) {
-    var screenPositionOffset = screenPosition.subtract(playerScreenPosition).plus(player.tileOffset.multiplyBy(TILE_SIZE));
-    var tilePositionOffset = screenPositionOffset.divideBy(TILE_SIZE).floor();
+    var playerScreenOffset = new Vector2D(player.tileOffset.x * TILE.width, player.tileOffset.y * TILE.height);
+    var screenPositionOffset = screenPosition.subtract(playerScreenPosition).plus(playerScreenOffset);
+    var tilePositionOffset = new Vector2D(screenPositionOffset.x / TILE.width, screenPositionOffset.y / TILE.height).floor();
     return player.tilePosition.plus(tilePositionOffset);
   }
   
@@ -97,21 +104,23 @@ var Watchmaker = function() {
     if(dt === undefined) dt = 0;
     ctx.fillStyle = "rgb(245,245,245)";  
     ctx.fillRect (0,0,canvas.width(), canvas.height());  
-    var mp = tileToScreen(mouseTilePosition);
-    ctx.fillStyle = "rgb(210,210,210)";
-    ctx.fillRect(mp.x, mp.y, TILE_SIZE, TILE_SIZE);
+
+    if(mouseTilePosition) {
+      var mp = tileToScreen(mouseTilePosition);
+      ctx.fillStyle = "rgb(210,210,210)";
+      ctx.fillRect(mp.x, mp.y, TILE.width, TILE.height);
+    }
   
     // this is super inefficient
     for(var x in Map.tiles) {
       for(var y in Map.tiles[x]) {
         var tilePos = new Vector2D(x, y);
         var screenPos = tileToScreen(tilePos);
-        if(screenPos.isWithin(-TILE_SIZE, -TILE_SIZE, canvas.width(), canvas.height())) {
+        if(screenPos.isWithin(-TILE.width, -TILE.height, canvas.width(), canvas.height())) {
           var tileType = Map.tiles[x][y];
           if(tileType) {
             var imageFile = "images/" + tileType + ".png"
             var image = Images.loaded[imageFile];
-            console.log(imageFile);
             if(image) 
               ctx.drawImage(image, screenPos.x, screenPos.y);
           }
@@ -138,7 +147,7 @@ var Watchmaker = function() {
         body.css('height', $(window).height() - 10)
         canvas.attr('width', $(body).width());
         canvas.attr('height', $(body).height() - 30);
-        playerScreenPosition = new Vector2D(canvas.width() - TILE_SIZE, canvas.height() - TILE_SIZE).divideBy(2).floor();
+        playerScreenPosition = new Vector2D(canvas.width() - TILE.width, canvas.height() - TILE.height).divideBy(2).floor();
         repaint()
       }).resize()
       
