@@ -50,7 +50,12 @@ var MAP_KEY = {
   "*": "start",
   "e": "eggplant",
   "f": "pinkflower",
-  "%": "fire",
+  "%": {
+        'source': 'fire',
+        'frameWidth': 30,
+        'frames': [0, 1],
+        'interval': 250
+       },
   "3": "love",
   "i": "invader",
   'w': 'owlet',
