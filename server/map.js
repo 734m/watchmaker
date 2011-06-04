@@ -48,7 +48,8 @@ var MAP_KEY = {
   "o": "obelisk",
   "c": "chair",
   "*": "start",
-  "e": "eggplant"
+  "e": "eggplant",
+  "f": "pinkflower"
 }
 
 MAP_DATA = [
@@ -68,7 +69,7 @@ MAP_DATA = [
 "|                                    ",
 "                e          |     |     |    |   ",
 "                                     ",
-"            1    ^                   ",
+"            1    ^    f              ",
  "            *                                   p         ",
 "      ^                               ",
 "|                                                      o  ",
