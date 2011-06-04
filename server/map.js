@@ -52,13 +52,14 @@ var MAP_KEY = {
   "f": "pinkflower",
   "%": "fire",
   "3": "love",
-  "i": "invader"
+  "i": "invader",
+  'w': 'owlet'
 }
 
 MAP_DATA = [
 "|                   ^      ::  :      ",
 "         &                             :  ",
-"                                    ",
+"              w                     ",
 "   &&       &   ^                    ",
 "                         ^       h         ^  ",
 "       &                                   ",
