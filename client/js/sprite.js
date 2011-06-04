@@ -50,6 +50,9 @@ var Sprite = function() {
     },
     
     draw: function(x, y) {
+      if(!this.frameOffset) {
+        this.frameOffset = 0;
+      }
       
 
       if(!this.loaded) {
