@@ -13,6 +13,7 @@ var Sprite = function() {
   
   var SpriteClass = function(source, ctx, frameWidth, numFrames, tileDimensions, animations, afterDraw) {
     var s = this;
+    this.source = source;
     this.image = new Image();
     this.image.onload = function() {
       s.loaded = true;
@@ -44,7 +45,13 @@ var Sprite = function() {
       this.elapsed += dt;
     },
     
+    toString: function() {
+      return this.source + ", " + this.frameWidth;
+    },
+    
     draw: function(x, y) {
+      
+
       if(!this.loaded) {
         return;
       }

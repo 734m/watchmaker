@@ -228,16 +228,33 @@ var Watchmaker = function() {
       for(var y in Map.tiles[x]) {
         var tileType = Map.tiles[x][y];
         if(tileType) {
-          var imageFile = "images/" + tileType + ".png"
-          var sprite = tileSprites[imageFile];
+          var sprite;
+          if(typeof(tileType) !== "string") {
+            // We now support non-string objects representing sprites
+            var imageFile = "images/" + tileType.source + ".png";
+            var sprite = tileSprites[imageFile];
+            if(!sprite) {
+              var animation = [];
+              var tileSprite = new Sprite(imageFile, ctx, tileType.frameWidth * 5, tileType.frames.length, TILE, {
+                'default': tileType.frames
+              });
+              tileSprite.setAnimation('default', tileType.interval || 500);
+              tileSprites[imageFile] = tileSprite;
+            }
+          }else{
+            var imageFile = "images/" + tileType + ".png"
+            var sprite = tileSprites[imageFile];
+            if(!sprite) {
+              tileSprites[imageFile] = new Sprite(imageFile, ctx, null, null, TILE);
+            }
+          }
           if(sprite && sprite.loaded) {
+            sprite.tick(dt);
             var tilePos = new Vector2D(x, y);
             var screenPos = tileToScreen(tilePos);
             if(screenPos.isWithin(-TILE.width - 100, -TILE.height -500, canvas.width() + 200, canvas.height() + 500)) {
               spriteArray.push({"x": screenPos.x, "y": screenPos.y, "sprite": sprite})
             }
-          }else{
-            tileSprites[imageFile] = new Sprite(imageFile, ctx, null, null, TILE);
           }
         }
       }
@@ -275,6 +292,14 @@ var Watchmaker = function() {
       // 
       // return (a.y - b.y); || ((a.sprite.image.src === player.sprite.image.src) ? 1 : 0) || ((b.sprite.image.src === player.sprite.image.src) ? -1 : 0) || (a.x - b.x) });
     $.each(spriteArray, function() {
+      if(this.sprite.source == "images/desk.png") {
+        console.dir(this.sprite);
+      }
+      if(this.sprite.source == "images/worm.png") {
+        console.dir(this.sprite);
+      }
+      
+      
       this.sprite.draw(this.x, this.y)
     });
   }
