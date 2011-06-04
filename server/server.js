@@ -20,7 +20,7 @@ app.listen(parseInt(process.env['PORT']) || 8080);
 // websocket
 //
 
-var world = require('./server/world');
+var world = require('./world');
 var socket = io.listen(app);
 
 // broadcast to all clients plz
